@@ -4,7 +4,7 @@ import Pagination from "../../Components/Pagination/Pagination.jsx";
 import SearchComponent from "../../Components/SearchAndFilter/SearchComponent.jsx";
 import PokemonCard from "../../Components/PokemonCard/PokemonCard.jsx";
 import FilterComponent from "../../Components/SearchAndFilter/FilterComponent.jsx";
-import { getPokemon, upperCaseFirtLetter, getRandomNumber } from "../../Utility/utils.js";
+import { upperCaseFirtLetter, getRandomNumber } from "../../Utility/utils.js";
 import ClipLoader from "react-spinners/ClipLoader";
 import "./Home.css";
 import "./FilterAndSearch.css";
@@ -21,7 +21,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   // pagination
-  const [currenPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [itemOffset, setItemOffset] = useState(0);
   const endOffset = itemOffset + itemsPerPage;
@@ -173,20 +173,6 @@ const Home = () => {
           console.error('Error fetching or processing data:', error);
           setLoading(false); // Ensure loading state is set to false in case of error
         });
-
-      fetch("http://localhost:3000/other-pokemon") // the rest of pokemons
-        .then((response) => {
-          return response.json(); // Convert response to JSON
-        })
-        .then((data) => {
-          // console.log(data);
-          setPokemonContainer(data);
-          setFilteredPokemonContainer(data);
-        })
-        .catch((error) => {
-          // Handle any errors from the fetch or subsequent operations
-          console.error('Error fetching or processing data:', error);
-        });
     };
     fetchPokemonData();
   }, []); // run once on mount
@@ -202,6 +188,30 @@ const Home = () => {
     if (!pokemonCard) return;
     const pokemonId = Number(pokemonCard.querySelector(".pokemon-name").textContent.split(" ")[0]);
     navigate(`/pokemon/${pokemonId}`);
+  }
+
+  async function loadMorePokemon() {
+    const lastPokemonId = pokemonContainer.length;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    setLoading(true);
+    fetch("http://localhost:3000/more-pokemon", {
+      method: "POST",
+      body: JSON.stringify({ index: lastPokemonId }),
+      headers: myHeaders,
+    })
+      .then((response) => {
+        return response.json(); // Convert response to JSON
+      })
+      .then((data) => {
+        // console.log(data);
+        setPokemonContainer((prevPokemonContainer) => [...prevPokemonContainer, ...data]);
+        setFilteredPokemonContainer((prevFilteredPokemonContainer) => [...prevFilteredPokemonContainer, ...data]);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching or processing data:', error);
+      });
   }
 
   return (
@@ -229,8 +239,11 @@ const Home = () => {
             <></>
           ) : (
             <>
-              <Pagination pageCount={pageCount} handlePageClick={handlePageClick}/>
-              <button onClick={getRandomPokemon} className="random-pokemon-btn">Get Random Pokemon</button>
+              <Pagination pageCount={pageCount} handlePageClick={handlePageClick} />
+              <div className="more-btns-container">
+                <button onClick={getRandomPokemon} className="random-pokemon-btn">Get Random Pokemon</button>
+                <button onClick={loadMorePokemon} className="laod-more-pokemon-btn">Load More Pokemon</button>
+              </div>
             </>
         )}
       </main>

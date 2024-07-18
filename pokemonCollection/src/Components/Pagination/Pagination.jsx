@@ -2,15 +2,15 @@ import { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import "./Pagination.css"
 
-const Pagination = ({ pageCount, handlePageClick }) => {
+const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
   return (
     <ReactPaginate
         breakLabel="..."
-        nextLabel="next >"
+        nextLabel="Next >"
         onPageChange={handlePageClick}
         pageRangeDisplayed={4}
         pageCount={pageCount}
-        previousLabel="< previous"
+        previousLabel="< Prev"
         renderOnZeroPageCount={null}
         containerClassName="pagination"
         pageClassName="page-item"

@@ -5,9 +5,6 @@ import BarLoader from "react-spinners/BarLoader";
 import "./PokemonDetails.css";
 
 const PokemonDetails = () => {
-  // should accept a children props(pokemon object)
-  // only function goBack(button)
-
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [pokemon, setPokemon] = useState();
