@@ -3,13 +3,13 @@ const cors = require("cors");
 require("dotenv").config();
 const { getPokemon } = require("./fetchPokemon");
 const app = express();
-app.use(cors());
-
+app.use(cors()); // Allows web servers to specify which origins (domains) can access their resources
+app.use(express.json()); // Add this line to parse JSON bodies
 
 app.get("/partial-pokemon", async (req, res) => {
   const pokemonContainer = [];
   let counter = 1;
-  while (counter != 20 + 1) {
+  while (counter != 50 + 1) {
     try {
       const pokemon = await getPokemon(counter);
       pokemonContainer.push(pokemon);
@@ -21,19 +21,33 @@ app.get("/partial-pokemon", async (req, res) => {
   res.send(pokemonContainer);
 });
 
-app.get("/other-pokemon", async (req, res) => {
+app.post("/more-pokemon", async (req, res) => {
+  const { index } = req.body;
   const pokemonContainer = [];
-  let counter = 21;
-  while (counter != 1025 + 1) {
+  let startId = Number(index) + 1;
+  const endId = startId + 25;
+  while (startId != endId) {
     try {
-      const pokemon = await getPokemon(counter);
+      const pokemon = await getPokemon(startId);
       pokemonContainer.push(pokemon);
     } catch(e) {
       console.log(e);
     }
-    counter++;
+    startId++;
   }
   res.send(pokemonContainer);
+});
+
+
+app.post("/randompokemon", async (req, res) => {
+  const {pokemonId} = req.body;
+  let counter = 21;
+  try {
+    const pokemon = await getPokemon(pokemonId);
+    res.send(pokemon);
+  } catch(e) {
+    console.log(e);
+  }
 });
 
 app.listen(process.env.PORT, () => {
