@@ -1,0 +1,40 @@
+/* NAVGIATION */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 25px;
+  height: 50px;
+}
+
+.logo {
+  color: #333;
+  font-weight: bold;
+  margin: 0; /* Remove default margin */
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-links {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-links li {
+  margin-left: 20px; /* Adjust spacing between items */
+}
+
+.nav-links a {
+  text-decoration: none; /* Remove underline from links */
+  color: #333; /* Example link color */
+}
+
+/* Optional: Style links on hover */
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* NAVGIATION */

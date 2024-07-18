@@ -1,0 +1,241 @@
+import { useState, useEffect, useContext } from "react";
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import Pagination from "../../Components/Pagination/Pagination.jsx";
+import SearchComponent from "../../Components/SearchAndFilter/SearchComponent.jsx";
+import PokemonCard from "../../Components/PokemonCard/PokemonCard.jsx";
+import FilterComponent from "../../Components/SearchAndFilter/FilterComponent.jsx";
+import { getPokemon, upperCaseFirtLetter, getRandomNumber } from "../../Utility/utils.js";
+import ClipLoader from "react-spinners/ClipLoader";
+import "./Home.css";
+import "./FilterAndSearch.css";
+
+const Home = () => {
+  const [loading, setLoading] = useState(false);
+  const [pokemonContainer, setPokemonContainer] = useState([]);
+  const [pokemon, setPokemon] = useState();
+  const [filteredPokemonContainer, setFilteredPokemonContainer] = useState([]);
+  const [searchInput, setSearchInput] = useState();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [sortBy, setSortBy ] = useState();
+  const [selectedTypes, setSelectedTypes] = useState([]);
+  const navigate = useNavigate();
+
+  // pagination
+  const [currenPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [itemOffset, setItemOffset] = useState(0);
+  const endOffset = itemOffset + itemsPerPage;
+  // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+  const currentItems = filteredPokemonContainer?.slice(itemOffset, endOffset);
+  const pageCount = Math.ceil(filteredPokemonContainer?.length / itemsPerPage);
+
+  // Invoke when user click to request another page.
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % filteredPokemonContainer?.length;
+    // console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
+    setItemOffset(newOffset);
+  };
+
+  // handle search
+  useEffect(() => {
+    setLoading(true);
+    if (searchInput === ""){
+      setFilteredPokemonContainer(pokemonContainer);
+      setLoading(false);
+      return;
+    }
+
+    const lowercaseSearchInput = searchInput?.toLowerCase();
+    const searchedPokemon = [...filteredPokemonContainer].filter((pokemon) => pokemon.name.includes(lowercaseSearchInput));
+    setFilteredPokemonContainer(searchedPokemon);
+    setLoading(false);
+    setItemOffset(0);
+  }, [searchInput]);
+
+   // handle sort by
+  useEffect(() => {
+    setLoading(true);
+    if (sortBy === "") {
+      setFilteredPokemonContainer(pokemonContainer);
+      setLoading(false);
+      return;
+    }
+
+    // console.log(sortBy);
+    if (sortBy === "name") {
+      const sortedPokemonContainer = [...filteredPokemonContainer].sort((a, b) => {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        return 0; // names must be equal
+      })
+      setFilteredPokemonContainer(sortedPokemonContainer);
+    }
+
+    if (sortBy === "lowHp") {
+      const sortedPokemonContainer = [...filteredPokemonContainer].sort((a, b) => {
+        const hpA = a.stats[0].base_stat;
+        const hpB = b.stats[0].base_stat;
+          if (hpA < hpB) {
+            return -1;
+          }
+          if (hpA > hpB) {
+          return 1;
+          }
+          return 0; // hp must be equal
+      })
+      setFilteredPokemonContainer(sortedPokemonContainer);
+    }
+
+    if (sortBy === "highHp") {
+      const sortedPokemonContainer = [...filteredPokemonContainer].sort((a, b) => {
+        const hpA = a.stats[0].base_stat;
+        const hpB = b.stats[0].base_stat;
+        if (hpA > hpB) {
+          return -1;
+        }
+        if (hpA < hpB) {
+          return 1;
+        }
+        return 0; // hp must be equal
+      })
+      setFilteredPokemonContainer(sortedPokemonContainer);
+    }
+
+    setLoading(false);
+  }, [sortBy])
+
+  // handle filter type
+  useEffect(() => {
+    setLoading(true);
+    if (selectedTypes.length === 0) {
+      setFilteredPokemonContainer(pokemonContainer);
+      setLoading(false);
+      return;
+    }
+
+    const filteredPokemons = pokemonContainer?.filter((pokemon) => {
+      return isPokemonSelectedType(createPokemonTypesString(pokemon.types), selectedTypes)
+    })
+    setFilteredPokemonContainer(filteredPokemons);
+    setLoading(false);
+  }, [selectedTypes])
+
+  // handle filter type helpers
+  function createPokemonTypesString(types) {
+    const pokemonTypes = [];
+    for (const type of types) {
+      pokemonTypes.push(type.type.name);
+    }
+
+    let pokemonTypesString = "";
+    for (const type of pokemonTypes) {
+      pokemonTypesString += type;
+    }
+    return pokemonTypesString;
+  }
+
+  // handle filter type helpers
+  function isPokemonSelectedType(pokemonTypesString, selectedTypes) {
+    let isPokemonSelectedType = false;
+    for (const type of selectedTypes) {
+      if (pokemonTypesString.includes(type)) {
+        isPokemonSelectedType = true;
+      } else {
+        return false;
+      }
+    }
+    return isPokemonSelectedType;
+  }
+
+  // handle pokemon cards
+  useEffect(() => {
+    const fetchPokemonData = async () => {
+      setLoading(true);
+      fetch("http://localhost:3000/partial-pokemon") // partial - pokemon
+        .then((response) => {
+          return response.json(); // Convert response to JSON
+        })
+        .then((data) => {
+          // console.log(data);
+          setPokemonContainer(data);
+          setFilteredPokemonContainer(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          // Handle any errors from the fetch or subsequent operations
+          console.error('Error fetching or processing data:', error);
+          setLoading(false); // Ensure loading state is set to false in case of error
+        });
+
+      fetch("http://localhost:3000/other-pokemon") // the rest of pokemons
+        .then((response) => {
+          return response.json(); // Convert response to JSON
+        })
+        .then((data) => {
+          // console.log(data);
+          setPokemonContainer(data);
+          setFilteredPokemonContainer(data);
+        })
+        .catch((error) => {
+          // Handle any errors from the fetch or subsequent operations
+          console.error('Error fetching or processing data:', error);
+        });
+    };
+    fetchPokemonData();
+  }, []); // run once on mount
+
+  // server request
+  async function getRandomPokemon() {
+    const pokemonId = getRandomNumber(1, 1026);
+    navigate(`pokemon/${pokemonId}`);
+  }
+
+  function handleSelectedPokemon(e) {
+    let pokemonCard = e.target.closest(".pokemon-card");
+    if (!pokemonCard) return;
+    const pokemonId = Number(pokemonCard.querySelector(".pokemon-name").textContent.split(" ")[0]);
+    navigate(`/pokemon/${pokemonId}`);
+  }
+
+  return (
+    <>
+      { loading ? (
+        <></>
+      ) : (
+        <div id="search-filter-container">
+          <SearchComponent searchInput={searchInput} setSearchInput={setSearchInput} sortBy={sortBy} setSortBy={setSortBy}/>
+          <FilterComponent selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}/>
+        </div>
+      )}
+      <main>
+        <div id="pokemon-container" onClick={handleSelectedPokemon}>
+          { loading ? (
+            <>
+              <ClipLoader color={"#0000FF"} speedMultiplier={1.2}/>
+              <p>Loading Pokemons</p>
+            </>
+          ) : (
+            <PokemonCard currentItems={currentItems} upperCaseFirtLetter={upperCaseFirtLetter} />
+          )}
+        </div>
+        { loading ? (
+            <></>
+          ) : (
+            <>
+              <Pagination pageCount={pageCount} handlePageClick={handlePageClick}/>
+              <button onClick={getRandomPokemon} className="random-pokemon-btn">Get Random Pokemon</button>
+            </>
+        )}
+      </main>
+    </>
+  );
+};
+
+export default Home;
