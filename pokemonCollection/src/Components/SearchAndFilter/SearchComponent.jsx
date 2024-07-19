@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
+import { useSearchParams  } from "react-router-dom";
 import debounce from "lodash.debounce";
 
 const SearchAndFilter = ({ searchInput, setSearchInput, sortBy, setSortBy }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const onSearchChange = (e) => {
     const target = e.target.value;
-    const debouncedSetSearchInput = debounce(() => {
-      setSearchInput(target)
-      // console.log(target)
-    }, 450);
-    debouncedSetSearchInput();
+
+    if (target.length === 0) {
+      searchParams.delete('q');
+      setSearchParams(searchParams);
+    } else {
+      searchParams.set("q", target);
+      setSearchParams(searchParams);
+    }
+  }
+
+  const onEnterPress = (e) => {
+    const key = e.code;
+    if (key === "Enter") {
+      console.log(e.target.value);
+      setSearchInput(e.target.value);
+    }
   }
 
   const onSortChange = (e) => {
@@ -19,6 +33,7 @@ const SearchAndFilter = ({ searchInput, setSearchInput, sortBy, setSortBy }) => 
   return (
     <>
       <input
+        onKeyDown={onEnterPress}
         onChange={onSearchChange}
         className="search-input"
         type="text"
