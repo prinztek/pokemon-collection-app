@@ -1,6 +1,11 @@
 main {
-  width: 100%;
+  width: 100vw;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
 }
 
 #pokemon-game-container {
@@ -10,6 +15,8 @@ main {
   align-items: center;
   gap: 25px;
   padding: 8px 15px;
+  min-height: 100%;
+  width: 100%;
 }
 
 .pokemon-game-image-container {
@@ -20,6 +27,7 @@ main {
   border-radius: 8px;
   padding: 15px 28px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+  width: 300px;
 }
 
 #silhouette {
