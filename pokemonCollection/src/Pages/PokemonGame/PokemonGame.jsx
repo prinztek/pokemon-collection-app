@@ -1,13 +1,14 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { getPokemon, upperCaseFirtLetter, getRandomNumber } from '../../Utility/utils.js';
-import BarLoader from "react-spinners/BarLoader";
+import ClipLoader from "react-spinners/ClipLoader";
 import "./PokemonGame.css";
 
 const PokemonGame = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pokemon, setPokemon] = useState();
   const [input, setinput] = useState();
+  const [resultText, setResultText] = useState("Who's That Pokemon?");
   const imageRef = useRef();
 
 
@@ -49,12 +50,27 @@ const PokemonGame = () => {
     const pokemonName = pokemon.name.toLowerCase();
     if (pokemonName === userInput) {
       imageRef.current.style.filter = "brightness(1)";
+      setResultText("Correct!");
       setTimeout(() => {
         getAnotherPokemon();
-      }, 5000);
+        setResultText("Who's That Pokemon?");
+      }, 3000);
     } else {
       alert("Wrong Answer!!!");
       console.log(pokemonName);
+      setResultText("Incorrect!");
+      setTimeout(() => {
+        setResultText("Who's That Pokemon?");
+      }, 2000);
+    }
+  }
+
+  function onEnterDown(e) {
+    const key = e.code;
+    if (key === "Enter") {
+      submitName();
+    } else {
+      return;
     }
   }
 
@@ -62,12 +78,15 @@ const PokemonGame = () => {
     <main>
       <div id="pokemon-game-container">
         { isLoading ? (
-            <BarLoader />
+            <>
+              <ClipLoader color={"#0000FF"} speedMultiplier={1.2}/>
+              <p className="loading-text">Loading Pokemon</p>
+            </>
           ) : (
             <>
               { pokemon && (
                 <>
-                  <h1>Who's That Pokemon?</h1>
+                  <h1>{resultText}</h1>
                   <div className="pokemon-game-image-container">
                     <img
                       ref={imageRef}
@@ -77,7 +96,7 @@ const PokemonGame = () => {
                   </div>
                   <div className="game-btns">
                     <button className="btn" onClick={showImage} >Show</button>
-                    <input onChange={onInputChange} id="silhouette-input" type="text" placeholder="Enter the Pokemon name" />
+                    <input onKeyDown={onEnterDown} onChange={onInputChange} id="silhouette-input" type="text" placeholder="Enter the Pokemon name" />
                     <button className="btn" onClick={submitName} >Submit</button>
                   </div>
                 </>
