@@ -8,6 +8,7 @@ const Navigation = () => {
         <ul className="nav-links">
           <li><Link to="/about">About</Link></li>
           <li><Link to="/contact">Contact</Link></li>
+          <li><Link to="/pokemon-game">Play a Game</Link></li>
         </ul>
       </nav>
   );
