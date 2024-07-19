@@ -5,6 +5,11 @@ const { getPokemon } = require("./fetchPokemon");
 const app = express();
 app.use(cors()); // Allows web servers to specify which origins (domains) can access their resources
 app.use(express.json()); // Add this line to parse JSON bodies
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/",  (req, res) => {
+  res.send("success");
+});
 
 app.get("/partial-pokemon", async (req, res) => {
   const pokemonContainer = [];
@@ -38,6 +43,27 @@ app.post("/more-pokemon", async (req, res) => {
   res.send(pokemonContainer);
 });
 
+app.post("/search", async (req, res) => {
+  const { searchQuery } = req.body;
+  const findText = searchQuery.toLowerCase();
+  console.log(findText);
+  const pokemonContainer = [];
+  let counter = 1;
+  while (counter != 493 + 1) {
+    try {
+      const pokemon = await getPokemon(counter);
+      if (pokemon.name.includes(findText)) {
+        console.log(pokemon.name.includes(findText));
+        pokemonContainer.push(pokemon);
+        console.log(pokemon);
+      }
+    } catch(e) {
+      console.log(e);
+    }
+    counter++;
+  }
+  res.send(pokemonContainer);
+});
 
 app.post("/randompokemon", async (req, res) => {
   const {pokemonId} = req.body;
