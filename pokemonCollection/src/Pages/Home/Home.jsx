@@ -44,7 +44,7 @@ const Home = () => {
       if (searchQuery !== null) {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        fetch("http://localhost:3000/search", {
+        fetch("https://pokemon-collection-api.vercel.app/search", {
           method: "Post",
           body: JSON.stringify({ searchQuery: searchQuery }),
           headers: myHeaders,
@@ -180,7 +180,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPokemonData = async () => {
       setLoading(true);
-      fetch("http://localhost:3000/partial-pokemon") // partial - pokemon
+      fetch("https://pokemon-collection-api.vercel.app/partial-pokemon") // partial - pokemon
         .then((response) => {
           return response.json(); // Convert response to JSON
         })
@@ -217,7 +217,7 @@ const Home = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     setLoading(true);
-    fetch("http://localhost:3000/more-pokemon", {
+    fetch("https://pokemon-collection-api.vercel.app/more-pokemon", {
       method: "POST",
       body: JSON.stringify({ index: lastPokemonId }),
       headers: myHeaders,
