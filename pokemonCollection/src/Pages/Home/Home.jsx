@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import Pagination from "../../Components/Pagination/Pagination.jsx";
 import SearchComponent from "../../Components/SearchAndFilter/SearchComponent.jsx";
 import PokemonCard from "../../Components/PokemonCard/PokemonCard.jsx";
@@ -10,11 +10,12 @@ import "./Home.css";
 import "./FilterAndSearch.css";
 
 const Home = () => {
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [pokemonContainer, setPokemonContainer] = useState([]);
   const [pokemon, setPokemon] = useState();
   const [filteredPokemonContainer, setFilteredPokemonContainer] = useState([]);
-  const [searchInput, setSearchInput] = useState();
+  const [searchInput, setSearchInput] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const [sortBy, setSortBy ] = useState();
   const [selectedTypes, setSelectedTypes] = useState([]);
@@ -38,18 +39,39 @@ const Home = () => {
 
   // handle search
   useEffect(() => {
-    setLoading(true);
+    const findSearchPokemon = async () => {
+      const searchQuery = new URLSearchParams(location.search).get('q');
+      if (searchQuery !== null) {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        fetch("http://localhost:3000/search", {
+          method: "Post",
+          body: JSON.stringify({ searchQuery: searchQuery }),
+          headers: myHeaders,
+        })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          setFilteredPokemonContainer(data); // Update state with fetched data
+          setLoading(false);
+          console.log(data);
+        })
+        .catch((err) => {
+          console.error('Error fetching or processing data:', error);
+          setLoading(false);
+        })
+      }
+    }
+
     if (searchInput === ""){
       setFilteredPokemonContainer(pokemonContainer);
       setLoading(false);
       return;
+    } else {
+      setLoading(true);
+      findSearchPokemon();
     }
-
-    const lowercaseSearchInput = searchInput?.toLowerCase();
-    const searchedPokemon = [...filteredPokemonContainer].filter((pokemon) => pokemon.name.includes(lowercaseSearchInput));
-    setFilteredPokemonContainer(searchedPokemon);
-    setLoading(false);
-    setItemOffset(0);
   }, [searchInput]);
 
    // handle sort by
@@ -229,7 +251,7 @@ const Home = () => {
           { loading ? (
             <>
               <ClipLoader color={"#0000FF"} speedMultiplier={1.2}/>
-              <p>Loading Pokemons</p>
+              <p className="loading-text">Loading Pokemons</p>
             </>
           ) : (
             <PokemonCard currentItems={currentItems} upperCaseFirtLetter={upperCaseFirtLetter} />
