@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getPokemon, upperCaseFirtLetter } from '../../Utility/utils.js';
-import BarLoader from "react-spinners/BarLoader";
+import LoadingComponent from "../../Components/LoadingComponent/LoadingComponent.jsx";
 import "./PokemonDetails.css";
 
 const PokemonDetails = () => {
@@ -22,9 +22,8 @@ const PokemonDetails = () => {
 
   return (
     <div className="pokemon-detail">
-    { isLoading ? (
-        <BarLoader />
-      ) : (
+    { isLoading ? ( <LoadingComponent /> )
+      : (
         <>
           { pokemon && (
             <>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useSearchParams  } from "react-router-dom";
-import debounce from "lodash.debounce";
+import { useSearchParams } from "react-router-dom";
+import "./SearchAndFilter.css";
 
 const SearchAndFilter = ({ searchInput, setSearchInput, sortBy, setSortBy }) => {
   const [searchParams, setSearchParams] = useSearchParams();

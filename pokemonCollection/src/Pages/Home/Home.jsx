@@ -2,12 +2,11 @@ import { useState, useEffect, useContext } from "react";
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import Pagination from "../../Components/Pagination/Pagination.jsx";
 import SearchComponent from "../../Components/SearchAndFilter/SearchComponent.jsx";
+import LoadingComponent from "../../Components/LoadingComponent/LoadingComponent.jsx";
 import PokemonCard from "../../Components/PokemonCard/PokemonCard.jsx";
 import FilterComponent from "../../Components/SearchAndFilter/FilterComponent.jsx";
 import { upperCaseFirtLetter, getRandomNumber } from "../../Utility/utils.js";
-import ClipLoader from "react-spinners/ClipLoader";
 import "./Home.css";
-import "./FilterAndSearch.css";
 
 const Home = () => {
   const location = useLocation();
@@ -249,10 +248,7 @@ const Home = () => {
       <main>
         <div id="pokemon-container" onClick={handleSelectedPokemon}>
           { loading ? (
-            <>
-              <ClipLoader color={"#0000FF"} speedMultiplier={1.2}/>
-              <p className="loading-text">Loading Pokemons</p>
-            </>
+            <LoadingComponent />
           ) : (
             <PokemonCard currentItems={currentItems} upperCaseFirtLetter={upperCaseFirtLetter} />
           )}

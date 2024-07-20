@@ -1,20 +1,23 @@
-#pokemon-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  min-height: 380px;
-  margin-bottom: 25px;
-}
-
 /* SEARCH FILTER CONTAINER */
 #search-filter-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0px 0px 25px 0px;
-  height: 50px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 8px;
+}
+
+/* POKEMON CARDS CONTAINER */
+#pokemon-container {
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 8px;
+    margin-bottom: 15px;
 }
 
 /* GET RANDOM POKEMON BUTTON */
@@ -24,6 +27,8 @@
     justify-content: center;
     align-items: center;
     gap: 15px;
+    width: 100%;
+    padding: 5px;
 }
 
 .random-pokemon-btn, .laod-more-pokemon-btn {
@@ -45,37 +50,3 @@
     background-color: #e5e7eb;
 }
 
-.loading-text {
-    margin-left: 8px;
-}
-
-/*span {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 10px;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: white;
-    margin: 2px;
-    text-align: center;
-    text-transform: capitalize;
-}
-
-span.grass { background-color: #7AC74C; }
-span.fire { background-color: #EE8130; }
-span.water { background-color: #6390F0; }
-span.electric { background-color: #F7D02C; }
-span.normal { background-color: #A8A77A; }
-span.ice { background-color: #96D9D6; }
-span.fighting { background-color: #C22E28; }
-span.poison { background-color: #A33EA1; }
-span.ground { background-color: #E2BF65; }
-span.flying { background-color: #A98FF3; }
-span.psychic { background-color: #F95587; }
-span.bug { background-color: #A6B91A; }
-span.rock { background-color: #B6A136; }
-span.ghost { background-color: #735797; }
-span.dragon { background-color: #6F35FC; }
-span.dark { background-color: #705746; }
-span.steel { background-color: #B7B7CE; }
-span.fairy { background-color: #D685AD; }*/

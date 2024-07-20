@@ -4,7 +4,8 @@ import "./Pagination.css"
 
 const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
   return (
-    <ReactPaginate
+    <div className="pagination-container">
+      <ReactPaginate
         breakLabel="..."
         nextLabel="Next >"
         onPageChange={handlePageClick}
@@ -23,6 +24,7 @@ const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
         breakLinkClassName="page-link"
         activeClassName="active"
       />
+    </div>
   );
 };
 

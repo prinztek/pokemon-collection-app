@@ -17,6 +17,7 @@
 
 html {
   height: 100%;
+  width: 100%;
   font-family: "Jost", sans-serif;
 }
 
@@ -25,3 +26,7 @@ html {
   height: 100%;
 }
 
+main {
+  height: 90%;
+  width: 100%;
+}
