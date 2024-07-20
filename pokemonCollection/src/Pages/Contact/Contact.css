@@ -1,1 +1,65 @@
+#contact-form {
+    height: 100%;
+    max-width: 700px;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding: 50px;
+}
 
+.header-text {
+   align-self: flex-start;
+   margin-bottom: 15px;
+}
+
+input, textarea {
+    padding: 15px 8px;
+    min-width: 200px;
+    max-width: 600px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    outline: none;
+    transition: background-color 0.3s;
+    margin: 5px;
+}
+
+input:focus, textarea:focus {
+    background-color: #e5e7eb;
+    border-color: #a1a5ad;
+}
+
+input {
+    height: 40px;
+}
+
+textarea {
+    height: 120px;
+}
+
+.contact-submit-btn {
+    width: 150px;
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 9999px; /* This creates the pill shape */
+    text-align: center;
+    cursor: pointer;
+    vertical-align: center;
+    transition: background-color 0.3s;
+    margin: 15px;
+}
+
+.contact-submit-btn:hover {
+    background-color: #e5e7eb;
+}
