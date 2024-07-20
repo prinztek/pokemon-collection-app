@@ -1,0 +1,119 @@
+.search-input {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    outline: none;
+    transition: background-color 0.3s;
+    margin: 5px;
+    height: 30px;
+}
+
+.search-input:focus {
+    background-color: #e5e7eb;
+    border-color: #a1a5ad; /* Slightly darker border on focus */
+}
+
+/* SORT BY */
+.select-sortBy {
+        height: 30px;
+    padding: 3px 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    outline: none;
+    transition: background-color 0.3s;
+    cursor: pointer;
+        margin: 5px;
+
+}
+
+.select-sortBy:focus {
+    background-color: #e5e7eb;
+    border-color: #a1a5ad; /* Slightly darker border on focus */
+}
+
+/* SORT BY */
+
+/* FILTER BY */
+.multipleSelection {
+    margin: 5px;
+    width: 145px;
+}
+
+.selectBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 145px;
+}
+
+.selectBox select {
+    padding: 3px 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    transition: background-color 0.3s;
+    outline: none;
+    cursor: pointer;
+    height: 30px;width: 145px;
+    box-sizing: border-box;
+}
+
+.selectBox select:focus {
+    background-color: #e5e7eb;
+    border-color: #a1a5ad; /* Slightly darker border on focus */
+}
+
+
+#checkBoxes {
+    position: absolute;
+    overflow: auto;
+    height: 280px;
+    width: 145px;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+#checkBoxes label {
+    padding: 2px 8px;
+    display: block;
+    text-align: left;
+}
+
+#checkBoxes label:hover {
+    background-color: #4F615E;
+    color: white;
+}
+
+#checkBoxes input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* Labels */
+label[for="normal"] { background-color: #A8A77A; }
+label[for="fire"] { background-color: #EE8130; }
+label[for="water"] { background-color: #6390F0; }
+label[for="electric"] { background-color: #F7D02C; }
+label[for="grass"] { background-color: #7AC74C; }
+label[for="ice"] { background-color: #96D9D6; }
+label[for="fighting"] { background-color: #C22E28; }
+label[for="poison"] { background-color: #A33EA1; }
+label[for="ground"] { background-color: #E2BF65; }
+label[for="flying"] { background-color: #A98FF3; }
+label[for="psychic"] { background-color: #F95587; }
+label[for="bug"] { background-color: #A6B91A; }
+label[for="rock"] { background-color: #B6A136; }
+label[for="ghost"] { background-color: #735797; }
+label[for="dragon"] { background-color: #6F35FC; }
+label[for="dark"] { background-color: #705746; }
+label[for="steel"] { background-color: #B7B7CE; }
+label[for="fairy"] { background-color: #D685AD; }
+
