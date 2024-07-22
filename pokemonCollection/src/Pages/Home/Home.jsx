@@ -216,7 +216,7 @@ const Home = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     setLoading(true);
-    fetch("https://pokemon-collection-api.vercel.app/more-pokemon", {
+    fetch("https://pokemon-collection-server.vercel.app/more-pokemon", {
       method: "POST",
       body: JSON.stringify({ index: lastPokemonId }),
       headers: myHeaders,
