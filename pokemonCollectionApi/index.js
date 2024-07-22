@@ -3,9 +3,6 @@ const cors = require("cors");
 require("dotenv").config();
 const { getPokemon } = require("./fetchPokemon");
 const app = express();
-app.use(cors()); // Allows web servers to specify which origins (domains) can access their resources
-app.use(express.json()); // Add this line to parse JSON bodies
-app.use(express.urlencoded({ extended: true }));
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
@@ -15,6 +12,16 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASSWORD
     }
 });
+
+const corsOptions = {
+  origin: "https://pokemon-collection-client-aibdk55pl-prinzteks-projects.vercel.app/",
+  optionsSuccessStatus: 200
+}
+
+app.use(cors(corsOptions)); // Allows web servers to specify which origins (domains) can access their resources
+app.use(express.json()); // Add this line to parse JSON bodies
+app.use(express.urlencoded({ extended: true }));
+
 
 app.post("/send-message", (req, res) => {
     const { contactForm } = req.body;
