@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const corsOptions = {
-  origin: "https://pokemon-collection-client-aibdk55pl-prinzteks-projects.vercel.app/",
+  origin: "https://pokemon-collection-client-aibdk55pl-prinzteks-projects.vercel.app",
   optionsSuccessStatus: 200
 }
 
