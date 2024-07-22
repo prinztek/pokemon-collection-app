@@ -16,19 +16,30 @@ const Contact = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // send contactForm to server
-    console.log(contactForm);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    fetch("http://localhost:3000/send-message", {
+      method: "Post",
+      body: JSON.stringify({ contactForm: contactForm }),
+      headers: myHeaders,
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error('Error fetching or processing data:', error);
+    })
   }
 
   return (
     <main>
-      <form id="contact-form" onChange={onInputChange}>
+      <form id="contact-form" onChange={onInputChange} onSubmit={onSubmit}>
         <h1 className="header-text">Contact</h1>
         <input type="text" name="name" placeholder="Name" required />
         <input type="email" name="email" placeholder="Email" required />
         <input type="text" name="subject" placeholder="Subject" />
         <textarea type="text" name="message" placeholder="message" />
-        <button onSubmit={onSubmit} type="submit" className="contact-submit-btn">Send Message</button>
+        <button type="submit" className="contact-submit-btn">Send Message</button>
       </form>
     </main>
     );
