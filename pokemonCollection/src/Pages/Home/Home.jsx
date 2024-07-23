@@ -11,6 +11,7 @@ import "./Home.css";
 const Home = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [pokemonContainer, setPokemonContainer] = useState([]);
   const [pokemon, setPokemon] = useState();
   const [filteredPokemonContainer, setFilteredPokemonContainer] = useState([]);
@@ -54,11 +55,12 @@ const Home = () => {
         .then((data) => {
           setFilteredPokemonContainer(data); // Update state with fetched data
           setLoading(false);
-          console.log(data);
+          // console.log(data);
         })
         .catch((err) => {
           console.error('Error fetching or processing data:', error);
           setLoading(false);
+          setError(true);
         })
       }
     }
@@ -193,12 +195,12 @@ const Home = () => {
           // Handle any errors from the fetch or subsequent operations
           console.error('Error fetching or processing data:', error);
           setLoading(false); // Ensure loading state is set to false in case of error
+          setError(true);
         });
     };
     fetchPokemonData();
   }, []); // run once on mount
 
-  // server request
   async function getRandomPokemon() {
     const pokemonId = getRandomNumber(1, 1026);
     navigate(`pokemon/${pokemonId}`);
@@ -232,6 +234,8 @@ const Home = () => {
       })
       .catch((error) => {
         console.error('Error fetching or processing data:', error);
+        setLoading(false);
+        setError(true);
       });
   }
 
@@ -247,8 +251,12 @@ const Home = () => {
       )}
       <main>
         <div id="pokemon-container" onClick={handleSelectedPokemon}>
-          { loading ? (
+          {loading ? (
             <LoadingComponent />
+          ) : error ? (
+            <p>Error fetching Pokemon data. Please try again later.</p>
+          ) : filteredPokemonContainer.length === 0 ? (
+            <p>No Pokemon found</p>
           ) : (
             <PokemonCard currentItems={currentItems} upperCaseFirtLetter={upperCaseFirtLetter} />
           )}
