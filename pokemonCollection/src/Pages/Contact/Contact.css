@@ -15,7 +15,7 @@
    margin-bottom: 15px;
 }
 
-input, textarea {
+#contact-form input, #contact-form textarea {
     padding: 15px 8px;
     min-width: 200px;
     max-width: 600px;
@@ -30,20 +30,20 @@ input, textarea {
     margin: 5px;
 }
 
-input:focus, textarea:focus {
+#contact-form input:focus, #contact-form textarea:focus {
     background-color: #e5e7eb;
     border-color: #a1a5ad;
 }
 
-input {
+#contact-form input {
     height: 40px;
 }
 
-textarea {
+#contact-form textarea {
     height: 120px;
 }
 
-.contact-submit-btn {
+#contact-form .contact-submit-btn {
     width: 150px;
     display: inline-block;
     padding: 8px 16px;
@@ -60,6 +60,6 @@ textarea {
     margin: 15px;
 }
 
-.contact-submit-btn:hover {
+#contact-form .contact-submit-btn:hover {
     background-color: #e5e7eb;
 }

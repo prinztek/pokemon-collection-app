@@ -94,10 +94,12 @@ const PokemonGame = () => {
                       src={pokemon.sprites.other["official-artwork"].front_default}
                     />
                   </div>
-                  <div className="game-btns">
-                    <button className="btn" onClick={showImage} >Show</button>
+                  <div className="game-controls">
                     <input onKeyDown={onEnterDown} onChange={onInputChange} id="silhouette-input" type="text" placeholder="Enter the Pokemon name" />
-                    <button className="btn" onClick={submitName} >Submit</button>
+                    <div className="game-btns">
+                      <button className="btn" onClick={showImage} >Show</button>
+                      <button className="btn" onClick={submitName} >Submit</button>
+                    </div>
                   </div>
                 </>
               )}
