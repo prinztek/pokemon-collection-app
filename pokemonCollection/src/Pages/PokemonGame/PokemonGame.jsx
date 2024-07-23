@@ -14,14 +14,7 @@ const PokemonGame = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    async function handleRandomPokemon() {
-      // should be a fetch request
-      const pokemon = await getPokemon(getRandomNumber(1, 1025));
-      setPokemon(pokemon); //
-      setIsLoading(false);
-      console.log(pokemon.name);
-    }
-    handleRandomPokemon(setPokemon);
+    handleRandomPokemon();
   }, [])
 
   function onInputChange(e) {
@@ -29,10 +22,10 @@ const PokemonGame = () => {
     setinput(target);
   }
 
-  async function getAnotherPokemon() {
+  async function handleRandomPokemon() {
     setIsLoading(true);
-    const pokemon = await getPokemon(getRandomNumber(1, 1025));
-    setPokemon(pokemon); //
+    const pokemon = await getPokemon(getRandomNumber(1, 493));
+    setPokemon(pokemon); 
     setIsLoading(false);
   }
 
@@ -52,7 +45,7 @@ const PokemonGame = () => {
       imageRef.current.style.filter = "brightness(1)";
       setResultText("Correct!");
       setTimeout(() => {
-        getAnotherPokemon();
+        handleRandomPokemon();
         setResultText("Who's That Pokemon?");
       }, 3000);
     } else {
