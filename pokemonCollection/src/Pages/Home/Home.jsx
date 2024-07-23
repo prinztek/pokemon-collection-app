@@ -11,6 +11,7 @@ import "./Home.css";
 const Home = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [pokemonContainer, setPokemonContainer] = useState([]);
   const [pokemon, setPokemon] = useState();
   const [filteredPokemonContainer, setFilteredPokemonContainer] = useState([]);
@@ -43,7 +44,7 @@ const Home = () => {
       if (searchQuery !== null) {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        fetch("https://pokemon-collection-server.vercel.app/search", {
+        fetch("http://localhost:3000/search", {
           method: "Post",
           body: JSON.stringify({ searchQuery: searchQuery }),
           headers: myHeaders,
@@ -179,7 +180,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPokemonData = async () => {
       setLoading(true);
-      fetch("https://pokemon-collection-server.vercel.app/partial-pokemon") // partial - pokemon
+      fetch("http://localhost:3000/partial-pokemon") // partial - pokemon
         .then((response) => {
           return response.json(); // Convert response to JSON
         })
@@ -216,7 +217,7 @@ const Home = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     setLoading(true);
-    fetch("https://pokemon-collection-server.vercel.app/more-pokemon", {
+    fetch("http://localhost:3000/more-pokemon", {
       method: "POST",
       body: JSON.stringify({ index: lastPokemonId }),
       headers: myHeaders,
@@ -232,6 +233,7 @@ const Home = () => {
       })
       .catch((error) => {
         console.error('Error fetching or processing data:', error);
+        setLoading(false);
       });
   }
 
