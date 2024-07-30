@@ -7,13 +7,14 @@ import PokemonCard from "../../Components/PokemonCard/PokemonCard.jsx";
 import FilterComponent from "../../Components/SearchAndFilter/FilterComponent.jsx";
 import { upperCaseFirtLetter, getRandomNumber } from "../../Utility/utils.js";
 import "./Home.css";
+import { PokemonContext } from '../../PokemonProvider.jsx';
 
 const Home = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [pokemonContainer, setPokemonContainer] = useState([]);
-  const [pokemon, setPokemon] = useState();
+  const {pokemon, setPokemon} = useContext(PokemonContext);
   const [filteredPokemonContainer, setFilteredPokemonContainer] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
@@ -202,14 +203,32 @@ const Home = () => {
   }, []); // run once on mount
 
   async function getRandomPokemon() {
-    const pokemonId = getRandomNumber(1, 1026);
-    navigate(`pokemon/${pokemonId}`);
+    async function handleRandomPokemon() {
+      fetch("https://pokemon-collection-server.vercel.app/random-pokemon") // partial - pokemon
+        .then((response) => {
+          console.log(response)
+          return response.json(); // Convert response to JSON
+        })
+        .then((data) => {
+          setPokemon(data);
+          return data
+        })
+        .then((pokemon) => {
+          navigate(`pokemon/${pokemon.id}`);
+        })
+        .catch((error) => {
+          console.error('Error fetching or processing data:', error);
+          setError(true);
+        });
+    }
+    handleRandomPokemon();
   }
 
   function handleSelectedPokemon(e) {
     let pokemonCard = e.target.closest(".pokemon-card");
     if (!pokemonCard) return;
     const pokemonId = Number(pokemonCard.querySelector(".pokemon-name").textContent.split(" ")[0]);
+    setPokemon(filteredPokemonContainer[pokemonId - 1])
     navigate(`/pokemon/${pokemonId}`);
   }
 

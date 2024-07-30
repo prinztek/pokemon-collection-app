@@ -102,11 +102,13 @@ app.post("/search", async (req, res) => {
   res.send(pokemonContainer);
 });
 
-app.post("/randompokemon", async (req, res) => {
-  const {pokemonId} = req.body;
-  let counter = 21;
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min) + min)
+}
+
+app.get("/random-pokemon", async (req, res) => {
   try {
-    const pokemon = await getPokemon(pokemonId);
+    const pokemon = await getPokemon(getRandomNumber(1, 493));
     res.send(pokemon);
   } catch(e) {
     console.log(e);

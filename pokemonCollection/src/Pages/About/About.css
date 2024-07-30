@@ -1,2 +1,15 @@
-/* ABOUT */
-/* ABOUT */
+#about-section {
+    height: 100%;
+    max-width: 700px;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+/*    align-items: center;*/
+    margin: auto;
+    padding: 25px;
+}
+
+#about-section ul {
+	margin-left: 40px;
+}
