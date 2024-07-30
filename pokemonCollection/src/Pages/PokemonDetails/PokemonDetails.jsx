@@ -12,32 +12,34 @@ const PokemonDetails = () => {
   // const { pokemonId } = useParams();
 
   return (
-    <div className="pokemon-detail">
-    { isLoading ? ( <LoadingComponent /> )
-      : (
-        <>
-          { pokemon && (
-            <>
-              <div className="pokemon-detail-left">
-                <img
-                  src={pokemon.sprites.other["official-artwork"].front_default}
-                  alt={pokemon.stats[0].stat.name}
-                />
-                <h1>{pokemon.id} {upperCaseFirtLetter(pokemon.name)}</h1>
-              </div>
-              <div className="pokemon-detail-right">
-                {pokemon.stats.map((pokemonStat, index) => {
-                  const stat = upperCaseFirtLetter(pokemonStat.stat.name);
-                  const value = pokemonStat.base_stat;
-                  return <h2 key={index}>{stat}: {value}</h2>;
-                })}
-                <button onClick={() => { navigate(`/`) }}>Go Back</button>
-              </div>
-            </>
+    <main>
+      <div className="pokemon-detail">
+      { isLoading ? ( <LoadingComponent /> )
+        : (
+          <>
+            { pokemon && (
+              <>
+                <div className="pokemon-detail-left">
+                  <img
+                    src={pokemon.sprites.other["official-artwork"].front_default}
+                    alt={pokemon.stats[0].stat.name}
+                  />
+                  <h1>{pokemon.id} {upperCaseFirtLetter(pokemon.name)}</h1>
+                </div>
+                <div className="pokemon-detail-right">
+                  {pokemon.stats.map((pokemonStat, index) => {
+                    const stat = upperCaseFirtLetter(pokemonStat.stat.name);
+                    const value = pokemonStat.base_stat;
+                    return <h2 key={index}>{stat}: {value}</h2>;
+                  })}
+                  <button onClick={() => { navigate(`/`) }}>Go Back</button>
+                </div>
+              </>
+            )}
+          </>
           )}
-        </>
-        )}
-    </div>
+      </div>
+    </main>
   );
 
 };

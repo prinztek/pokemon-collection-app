@@ -4,29 +4,29 @@
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  min-width: 500px;
-  min-height: 600px;
-  padding: 20px;
+  height: 500px;
+  width: 700px;
+  margin: auto;
+  padding: 15px 20px 20px 20px;
   gap: 25px;
 }
 
 .pokemon-detail-left {
+/*  border: 3px solid black;*/
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;
-  min-width: 200px;
-  min-height: 260px;
   border-radius: 3px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 5px;
+  flex: 0 0 60%; /* Make the left div take 60% of the width */
+  height: 100%; /* Ensure full height */
 }
 
 .pokemon-detail-left img {
-  height: 80%;
+  width: 100%;
   border-radius: 3px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   margin-bottom: 8px;
@@ -35,10 +35,11 @@
 .pokemon-detail-right {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 10px;
-  min-width: 200px;
-  min-height: 260px;
-/*  border: 1px solid red;*/
+/*  border: 3px solid red;*/
+  flex: 0 0 40%; /* Make the right div take 40% of the width */
+  height: 100%; /* Ensure full height */
 }
 
 .pokemon-detail-right button {
@@ -56,3 +57,22 @@
   background-color: #0056b3;
 }
 
+/* Media query for small screens */
+@media (max-width: 600px) {
+  .pokemon-detail {
+    flex-direction: column; /* Stack children vertically */
+    height: auto; /* Adjust height to fit content */
+    width: 100%; /* Full width of the viewport */
+  }
+
+  .pokemon-detail-left,
+  .pokemon-detail-right {
+    flex: 1 1 auto; /* Allow both to grow and shrink */
+    width: 100%; /* Full width within the container */
+    height: auto; /* Adjust height to fit content */
+  }
+
+  .pokemon-detail-left img {
+    width: 100%; /* Full width of its container */
+  }
+}
