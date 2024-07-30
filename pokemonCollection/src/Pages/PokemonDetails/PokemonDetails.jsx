@@ -1,24 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { getPokemon, upperCaseFirtLetter } from '../../Utility/utils.js';
 import LoadingComponent from "../../Components/LoadingComponent/LoadingComponent.jsx";
 import "./PokemonDetails.css";
+import { PokemonContext } from '../../PokemonProvider.jsx';
 
 const PokemonDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [pokemon, setPokemon] = useState();
-  const { pokemonId } = useParams();
-
-  useEffect(() => {
-    setIsLoading(true);
-    async function handleRandomPokemon() {
-      const pokemon = await getPokemon(pokemonId);
-      setPokemon(pokemon); //
-      setIsLoading(false);
-    }
-    handleRandomPokemon(setPokemon);
-  }, [pokemonId])
+  const { pokemon, setPokemon } = useContext(PokemonContext);
+  // const { pokemonId } = useParams();
 
   return (
     <div className="pokemon-detail">
