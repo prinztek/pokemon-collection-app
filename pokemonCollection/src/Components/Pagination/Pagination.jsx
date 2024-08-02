@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import ReactPaginate from 'react-paginate';
-import "./Pagination.css"
+import ReactPaginate from "react-paginate";
+import "./Pagination.css";
 
 const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
   return (
@@ -11,6 +10,7 @@ const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
         onPageChange={handlePageClick}
         pageRangeDisplayed={4}
         pageCount={pageCount}
+        forcePage={currentPage}
         previousLabel="< Prev"
         renderOnZeroPageCount={null}
         containerClassName="pagination"
@@ -29,5 +29,3 @@ const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
 };
 
 export default Pagination;
-
-

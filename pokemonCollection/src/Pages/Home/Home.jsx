@@ -1,24 +1,24 @@
 import { useState, useEffect, useContext } from "react";
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import Pagination from "../../Components/Pagination/Pagination.jsx";
 import SearchComponent from "../../Components/SearchAndFilter/SearchComponent.jsx";
 import LoadingComponent from "../../Components/LoadingComponent/LoadingComponent.jsx";
 import PokemonCard from "../../Components/PokemonCard/PokemonCard.jsx";
 import FilterComponent from "../../Components/SearchAndFilter/FilterComponent.jsx";
-import { upperCaseFirtLetter, getRandomNumber } from "../../Utility/utils.js";
+import { upperCaseFirtLetter } from "../../Utility/utils.js";
 import "./Home.css";
-import { PokemonContext } from '../../PokemonProvider.jsx';
+import { PokemonContext } from "../../PokemonProvider.jsx";
 
 const Home = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { pokemon, setPokemon } = useContext(PokemonContext);
   const [pokemonContainer, setPokemonContainer] = useState([]);
-  const {pokemon, setPokemon} = useContext(PokemonContext);
   const [filteredPokemonContainer, setFilteredPokemonContainer] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sortBy, setSortBy ] = useState();
+  const [sortBy, setSortBy] = useState();
   const [selectedTypes, setSelectedTypes] = useState([]);
   const navigate = useNavigate();
 
@@ -33,40 +33,42 @@ const Home = () => {
 
   // Invoke when user click to request another page.
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % filteredPokemonContainer?.length;
+    const newOffset =
+      (event.selected * itemsPerPage) % filteredPokemonContainer?.length;
     // console.log(`User requested page number ${event.selected}, which is offset ${newOffset}`);
     setItemOffset(newOffset);
+    setCurrentPage(event.selected);
   };
 
   // handle search
   useEffect(() => {
     const findSearchPokemon = async () => {
-      const searchQuery = new URLSearchParams(location.search).get('q');
+      const searchQuery = new URLSearchParams(location.search).get("q");
       if (searchQuery !== null) {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        fetch("https://pokemon-collection-client.vercel.app/search", {
+        fetch("https://pokemon-collection-server.vercel.app/search", {
           method: "Post",
           body: JSON.stringify({ searchQuery: searchQuery }),
           headers: myHeaders,
         })
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          setFilteredPokemonContainer(data); // Update state with fetched data
-          setLoading(false);
-          // console.log(data);
-        })
-        .catch((err) => {
-          console.error('Error fetching or processing data:', error);
-          setLoading(false);
-          setError(true);
-        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            setFilteredPokemonContainer(data); // Update state with fetched data
+            setLoading(false);
+            // console.log(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching or processing data:", error);
+            setLoading(false);
+            setError(true);
+          });
       }
-    }
+    };
 
-    if (searchInput === ""){
+    if (searchInput === "") {
       setFilteredPokemonContainer(pokemonContainer);
       setLoading(false);
       return;
@@ -76,7 +78,7 @@ const Home = () => {
     }
   }, [searchInput]);
 
-   // handle sort by
+  // handle sort by
   useEffect(() => {
     setLoading(true);
     if (sortBy === "") {
@@ -87,53 +89,59 @@ const Home = () => {
 
     // console.log(sortBy);
     if (sortBy === "name") {
-      const sortedPokemonContainer = [...filteredPokemonContainer].sort((a, b) => {
-        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
+      const sortedPokemonContainer = [...filteredPokemonContainer].sort(
+        (a, b) => {
+          const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+          const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
 
-        return 0; // names must be equal
-      })
+          return 0; // names must be equal
+        }
+      );
       setFilteredPokemonContainer(sortedPokemonContainer);
     }
 
     if (sortBy === "lowHp") {
-      const sortedPokemonContainer = [...filteredPokemonContainer].sort((a, b) => {
-        const hpA = a.stats[0].base_stat;
-        const hpB = b.stats[0].base_stat;
+      const sortedPokemonContainer = [...filteredPokemonContainer].sort(
+        (a, b) => {
+          const hpA = a.stats[0].base_stat;
+          const hpB = b.stats[0].base_stat;
           if (hpA < hpB) {
             return -1;
           }
           if (hpA > hpB) {
-          return 1;
+            return 1;
           }
           return 0; // hp must be equal
-      })
+        }
+      );
       setFilteredPokemonContainer(sortedPokemonContainer);
     }
 
     if (sortBy === "highHp") {
-      const sortedPokemonContainer = [...filteredPokemonContainer].sort((a, b) => {
-        const hpA = a.stats[0].base_stat;
-        const hpB = b.stats[0].base_stat;
-        if (hpA > hpB) {
-          return -1;
+      const sortedPokemonContainer = [...filteredPokemonContainer].sort(
+        (a, b) => {
+          const hpA = a.stats[0].base_stat;
+          const hpB = b.stats[0].base_stat;
+          if (hpA > hpB) {
+            return -1;
+          }
+          if (hpA < hpB) {
+            return 1;
+          }
+          return 0; // hp must be equal
         }
-        if (hpA < hpB) {
-          return 1;
-        }
-        return 0; // hp must be equal
-      })
+      );
       setFilteredPokemonContainer(sortedPokemonContainer);
     }
 
     setLoading(false);
-  }, [sortBy])
+  }, [sortBy]);
 
   // handle filter type
   useEffect(() => {
@@ -145,11 +153,14 @@ const Home = () => {
     }
 
     const filteredPokemons = pokemonContainer?.filter((pokemon) => {
-      return isPokemonSelectedType(createPokemonTypesString(pokemon.types), selectedTypes)
-    })
+      return isPokemonSelectedType(
+        createPokemonTypesString(pokemon.types),
+        selectedTypes
+      );
+    });
     setFilteredPokemonContainer(filteredPokemons);
     setLoading(false);
-  }, [selectedTypes])
+  }, [selectedTypes]);
 
   // handle filter type helpers
   function createPokemonTypesString(types) {
@@ -182,7 +193,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPokemonData = async () => {
       setLoading(true);
-      fetch("https://pokemon-collection-client.vercel.app/partial-pokemon") // partial - pokemon
+      fetch("https://pokemon-collection-server.vercel.app/partial-pokemon") // partial - pokemon
         .then((response) => {
           return response.json(); // Convert response to JSON
         })
@@ -194,7 +205,7 @@ const Home = () => {
         })
         .catch((error) => {
           // Handle any errors from the fetch or subsequent operations
-          console.error('Error fetching or processing data:', error);
+          console.error("Error fetching or processing data:", error);
           setLoading(false); // Ensure loading state is set to false in case of error
           setError(true);
         });
@@ -204,20 +215,20 @@ const Home = () => {
 
   async function getRandomPokemon() {
     async function handleRandomPokemon() {
-      fetch("https://pokemon-collection-client.vercel.app/random-pokemon") // partial - pokemon
+      fetch("https://pokemon-collection-server.vercel.app/random-pokemon") // partial - pokemon
         .then((response) => {
-          console.log(response)
+          console.log(response);
           return response.json(); // Convert response to JSON
         })
         .then((data) => {
           setPokemon(data);
-          return data
+          return data;
         })
         .then((pokemon) => {
           navigate(`pokemon/${pokemon.id}`);
         })
         .catch((error) => {
-          console.error('Error fetching or processing data:', error);
+          console.error("Error fetching or processing data:", error);
           setError(true);
         });
     }
@@ -227,8 +238,10 @@ const Home = () => {
   function handleSelectedPokemon(e) {
     let pokemonCard = e.target.closest(".pokemon-card");
     if (!pokemonCard) return;
-    const pokemonId = Number(pokemonCard.querySelector(".pokemon-name").textContent.split(" ")[0]);
-    setPokemon(filteredPokemonContainer[pokemonId - 1])
+    const pokemonId = Number(
+      pokemonCard.querySelector(".pokemon-name").textContent.split(" ")[0]
+    );
+    setPokemon(filteredPokemonContainer[pokemonId - 1]);
     navigate(`/pokemon/${pokemonId}`);
   }
 
@@ -237,7 +250,7 @@ const Home = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     setLoading(true);
-    fetch("https://pokemon-collection-client.vercel.app/more-pokemon", {
+    fetch("https://pokemon-collection-server.vercel.app/more-pokemon", {
       method: "POST",
       body: JSON.stringify({ index: lastPokemonId }),
       headers: myHeaders,
@@ -246,13 +259,12 @@ const Home = () => {
         return response.json(); // Convert response to JSON
       })
       .then((data) => {
-        // console.log(data);
-        setPokemonContainer((prevPokemonContainer) => [...prevPokemonContainer, ...data]);
-        setFilteredPokemonContainer((prevFilteredPokemonContainer) => [...prevFilteredPokemonContainer, ...data]);
+        setPokemonContainer((prev) => [...prev, ...data]);
+        setFilteredPokemonContainer((prev) => [...prev, ...data]);
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching or processing data:', error);
+        console.error("Error fetching or processing data:", error);
         setLoading(false);
         setError(true);
       });
@@ -260,12 +272,20 @@ const Home = () => {
 
   return (
     <>
-      { loading ? (
+      {loading ? (
         <></>
       ) : (
         <div id="search-filter-container">
-          <SearchComponent searchInput={searchInput} setSearchInput={setSearchInput} sortBy={sortBy} setSortBy={setSortBy}/>
-          <FilterComponent selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes}/>
+          <SearchComponent
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+          />
+          <FilterComponent
+            selectedTypes={selectedTypes}
+            setSelectedTypes={setSelectedTypes}
+          />
         </div>
       )}
       <main>
@@ -277,19 +297,33 @@ const Home = () => {
           ) : filteredPokemonContainer.length === 0 ? (
             <p>No Pokemon found</p>
           ) : (
-            <PokemonCard currentItems={currentItems} upperCaseFirtLetter={upperCaseFirtLetter} />
+            <PokemonCard
+              currentItems={currentItems}
+              upperCaseFirtLetter={upperCaseFirtLetter}
+            />
           )}
         </div>
-        { loading ? (
-            <></>
-          ) : (
-            <>
-              <Pagination pageCount={pageCount} handlePageClick={handlePageClick} />
-              <div className="more-btns-container">
-                <button onClick={getRandomPokemon} className="random-pokemon-btn">Get Random Pokemon</button>
-                <button onClick={loadMorePokemon} className="laod-more-pokemon-btn">Load More Pokemon</button>
-              </div>
-            </>
+        {loading ? (
+          <></>
+        ) : (
+          <>
+            <Pagination
+              pageCount={pageCount}
+              handlePageClick={handlePageClick}
+              currentPage={currentPage}
+            />
+            <div className="more-btns-container">
+              <button onClick={getRandomPokemon} className="random-pokemon-btn">
+                Get Random Pokemon
+              </button>
+              <button
+                onClick={loadMorePokemon}
+                className="laod-more-pokemon-btn"
+              >
+                Load More Pokemon
+              </button>
+            </div>
+          </>
         )}
       </main>
     </>
