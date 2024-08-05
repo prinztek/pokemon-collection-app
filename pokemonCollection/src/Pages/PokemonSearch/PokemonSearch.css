@@ -1,0 +1,52 @@
+/* SEARCH FILTER CONTAINER */
+#search-filter-container {
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 8px;
+}
+
+/* POKEMON CARDS CONTAINER */
+#pokemon-container {
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+/* GET RANDOM POKEMON BUTTON */
+
+.more-btns-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    padding: 5px;
+}
+
+.random-pokemon-btn, .laod-more-pokemon-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 9999px; /* This creates the pill shape */
+    text-align: center;
+    cursor: pointer;
+    vertical-align: center;
+    transition: background-color 0.3s;
+}
+
+.random-pokemon-btn:hover, .laod-more-pokemon-btn:hover {
+    background-color: #e5e7eb;
+}
+

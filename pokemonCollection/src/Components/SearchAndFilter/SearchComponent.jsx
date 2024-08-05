@@ -1,34 +1,30 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./SearchAndFilter.css";
 
-const SearchAndFilter = ({ searchInput, setSearchInput, sortBy, setSortBy }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const SearchAndFilter = ({
+  searchInput,
+  setSearchInput,
+  sortBy,
+  setSortBy,
+}) => {
+  const navigate = useNavigate();
 
   const onSearchChange = (e) => {
     const target = e.target.value;
-
-    if (target.length === 0) {
-      searchParams.delete('q');
-      setSearchParams(searchParams);
-    } else {
-      searchParams.set("q", target);
-      setSearchParams(searchParams);
-    }
-  }
+    setSearchInput(target);
+  };
 
   const onEnterPress = (e) => {
     const key = e.code;
     if (key === "Enter") {
-      console.log(e.target.value);
-      setSearchInput(e.target.value);
+      navigate(`/search?q=${searchInput}`);
     }
-  }
+  };
 
   const onSortChange = (e) => {
     const target = e.target.value;
     setSortBy(target);
-  }
+  };
 
   return (
     <>
@@ -39,8 +35,16 @@ const SearchAndFilter = ({ searchInput, setSearchInput, sortBy, setSortBy }) => 
         type="text"
         placeholder="Type a pokemon name"
       />
-      <select className="select-sortBy" onChange={onSortChange} name="sortBy" defaultValue="" value={sortBy}>
-        <option value="" disabled>Sort by</option>
+      <select
+        className="select-sortBy"
+        onChange={onSortChange}
+        name="sortBy"
+        defaultValue=""
+        value={sortBy}
+      >
+        <option value="" disabled>
+          Sort by
+        </option>
         <option value="name">Name</option>
         <option value="lowHp">Low Hp</option>
         <option value="highHp">High Hp</option>
@@ -50,4 +54,3 @@ const SearchAndFilter = ({ searchInput, setSearchInput, sortBy, setSortBy }) => 
 };
 
 export default SearchAndFilter;
-

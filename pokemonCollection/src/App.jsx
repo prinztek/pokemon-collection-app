@@ -7,7 +7,8 @@ import PokemonDetails from "./Pages/PokemonDetails/PokemonDetails.jsx";
 import PokemonGame from "./Pages/PokemonGame/PokemonGame.jsx";
 import PokemonProvider from "./PokemonProvider.jsx";
 import { Route, Routes } from "react-router-dom";
-import { useContext } from 'react';
+import { useContext } from "react";
+import PokemonSearch from "./Pages/PokemonSearch/PokemonSearch.jsx";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Navigation />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/search" element={<PokemonSearch />} />
         <Route path="/pokemon/:pokemonId" element={<PokemonDetails />} />
         <Route path="/pokemon-game" element={<PokemonGame />} />
         <Route path="/about" element={<About />} />

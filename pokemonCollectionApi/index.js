@@ -82,10 +82,32 @@ app.post("/more-pokemon", async (req, res) => {
   res.send(pokemonContainer);
 });
 
-app.post("/search", async (req, res) => {
-  const { searchQuery } = req.body;
-  const findText = searchQuery.toLowerCase();
-  console.log(findText);
+// app.post("/search", async (req, res) => {
+//   const { searchQuery } = req.body;
+//   const findText = searchQuery.toLowerCase();
+//   console.log(findText);
+//   const pokemonContainer = [];
+//   let counter = 1;
+//   while (counter != 493 + 1) {
+//     try {
+//       const pokemon = await getPokemon(counter);
+//       if (pokemon.name.includes(findText)) {
+//         console.log(pokemon.name.includes(findText));
+//         pokemonContainer.push(pokemon);
+//         console.log(pokemon);
+//       }
+//     } catch (e) {
+//       console.log(e);
+//     }
+//     counter++;
+//   }
+//   res.send(pokemonContainer);
+// });
+
+app.get("/search", async (req, res) => {
+  const searchTerm = req.query.q;
+  console.log(searchTerm);
+  const findText = searchTerm.toLowerCase();
   const pokemonContainer = [];
   let counter = 1;
   while (counter != 493 + 1) {
@@ -94,7 +116,7 @@ app.post("/search", async (req, res) => {
       if (pokemon.name.includes(findText)) {
         console.log(pokemon.name.includes(findText));
         pokemonContainer.push(pokemon);
-        console.log(pokemon);
+        console.log(pokemon.name);
       }
     } catch (e) {
       console.log(e);
