@@ -41,42 +41,44 @@ const Home = () => {
   };
 
   // handle search
-  useEffect(() => {
-    const findSearchPokemon = async () => {
-      const searchQuery = new URLSearchParams(location.search).get("q");
-      if (searchQuery !== null) {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        fetch("https://pokemon-collection-server.vercel.app/search", {
-          method: "Post",
-          body: JSON.stringify({ searchQuery: searchQuery }),
-          headers: myHeaders,
-        })
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            setFilteredPokemonContainer(data); // Update state with fetched data
-            setLoading(false);
-            // console.log(data);
-          })
-          .catch((error) => {
-            console.error("Error fetching or processing data:", error);
-            setLoading(false);
-            setError(true);
-          });
-      }
-    };
+  // useEffect(() => {
+  //   const findSearchPokemon = async () => {
+  //     const searchQuery = new URLSearchParams(location.search).get("q");
+  //     if (searchQuery !== null) {
+  //       const myHeaders = new Headers();
+  //       myHeaders.append("Content-Type", "application/json");
+  //       fetch("https://pokemon-collection-server.vercel.app/search", {
+  //         method: "Post",
+  //         body: JSON.stringify({ searchQuery: searchQuery }),
+  //         headers: myHeaders,
+  //       })
+  //         .then((response) => {
+  //           return response.json();
+  //         })
+  //         .then((data) => {
+  //           console.log(data);
+  //           setCurrentPage(0);
+  //           setFilteredPokemonContainer(data); // Update state with fetched data
+  //           setLoading(false);
+  //           // console.log(data);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error fetching or processing data:", error);
+  //           setLoading(false);
+  //           setError(true);
+  //         });
+  //     }
+  //   };
 
-    if (searchInput === "") {
-      setFilteredPokemonContainer(pokemonContainer);
-      setLoading(false);
-      return;
-    } else {
-      setLoading(true);
-      findSearchPokemon();
-    }
-  }, [searchInput]);
+  //   if (searchInput === "") {
+  //     setFilteredPokemonContainer(pokemonContainer);
+  //     setLoading(false);
+  //     return;
+  //   } else {
+  //     setLoading(true);
+  //     findSearchPokemon();
+  //   }
+  // }, [searchInput]);
 
   // handle sort by
   useEffect(() => {
@@ -87,59 +89,75 @@ const Home = () => {
       return;
     }
 
+    const sortedPokemonContainer = [...filteredPokemonContainer].sort(
+      (a, b) => {
+        if (sortBy === "name") {
+          return a.name.localeCompare(b.name);
+        } else {
+          const hpA = a.stats[0].base_stat;
+          const hpB = b.stats[0].base_stat;
+          if (sortBy === "lowHp") {
+            return hpA - hpB;
+          } else if (sortBy === "highHp") {
+            return hpB - hpA;
+          }
+        }
+        return 0;
+      }
+    );
     // console.log(sortBy);
-    if (sortBy === "name") {
-      const sortedPokemonContainer = [...filteredPokemonContainer].sort(
-        (a, b) => {
-          const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-          const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-          if (nameA < nameB) {
-            return -1;
-          }
-          if (nameA > nameB) {
-            return 1;
-          }
+    // if (sortBy === "name") {
+    //   const sortedPokemonContainer = [...filteredPokemonContainer].sort(
+    //     (a, b) => {
+    //       const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    //       const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    //       if (nameA < nameB) {
+    //         return -1;
+    //       }
+    //       if (nameA > nameB) {
+    //         return 1;
+    //       }
 
-          return 0; // names must be equal
-        }
-      );
-      setFilteredPokemonContainer(sortedPokemonContainer);
-    }
+    //       return 0; // names must be equal
+    //     }
+    //   );
+    //   setFilteredPokemonContainer(sortedPokemonContainer);
+    // }
 
-    if (sortBy === "lowHp") {
-      const sortedPokemonContainer = [...filteredPokemonContainer].sort(
-        (a, b) => {
-          const hpA = a.stats[0].base_stat;
-          const hpB = b.stats[0].base_stat;
-          if (hpA < hpB) {
-            return -1;
-          }
-          if (hpA > hpB) {
-            return 1;
-          }
-          return 0; // hp must be equal
-        }
-      );
-      setFilteredPokemonContainer(sortedPokemonContainer);
-    }
+    // if (sortBy === "lowHp") {
+    //   const sortedPokemonContainer = [...filteredPokemonContainer].sort(
+    //     (a, b) => {
+    //       const hpA = a.stats[0].base_stat;
+    //       const hpB = b.stats[0].base_stat;
+    //       if (hpA < hpB) {
+    //         return -1;
+    //       }
+    //       if (hpA > hpB) {
+    //         return 1;
+    //       }
+    //       return 0; // hp must be equal
+    //     }
+    //   );
+    //   setFilteredPokemonContainer(sortedPokemonContainer);
+    // }
 
-    if (sortBy === "highHp") {
-      const sortedPokemonContainer = [...filteredPokemonContainer].sort(
-        (a, b) => {
-          const hpA = a.stats[0].base_stat;
-          const hpB = b.stats[0].base_stat;
-          if (hpA > hpB) {
-            return -1;
-          }
-          if (hpA < hpB) {
-            return 1;
-          }
-          return 0; // hp must be equal
-        }
-      );
-      setFilteredPokemonContainer(sortedPokemonContainer);
-    }
-
+    // if (sortBy === "highHp") {
+    //   const sortedPokemonContainer = [...filteredPokemonContainer].sort(
+    //     (a, b) => {
+    //       const hpA = a.stats[0].base_stat;
+    //       const hpB = b.stats[0].base_stat;
+    //       if (hpA > hpB) {
+    //         return -1;
+    //       }
+    //       if (hpA < hpB) {
+    //         return 1;
+    //       }
+    //       return 0; // hp must be equal
+    //     }
+    //   );
+    //   setFilteredPokemonContainer(sortedPokemonContainer);
+    // }
+    setFilteredPokemonContainer(sortedPokemonContainer);
     setLoading(false);
   }, [sortBy]);
 
