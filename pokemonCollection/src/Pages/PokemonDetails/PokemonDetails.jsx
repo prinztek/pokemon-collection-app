@@ -6,15 +6,38 @@ import "./PokemonDetails.css";
 import { PokemonContext } from "../../PokemonProvider.jsx";
 
 const PokemonDetails = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { pokemon, setPokemon } = useContext(PokemonContext);
-  // const { pokemonId } = useParams();
+  const { pokemonId } = useParams();
+
+  useEffect(() => {
+    // fetch for specific pokemon
+    async function getSelectedPokemon() {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `http://localhost:3000/selected-pokemon/${pokemonId}`
+        );
+        const data = await response.json();
+        setPokemon(data);
+      } catch (error) {
+        console.error("Error fetching Pokémon data:", error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (pokemonId) {
+      getSelectedPokemon();
+    }
+  }, [pokemonId]);
 
   return (
     <main>
       <div className="pokemon-detail">
-        {isLoading ? (
+        {loading ? (
           <LoadingComponent />
         ) : (
           <>
@@ -59,12 +82,3 @@ const PokemonDetails = () => {
 };
 
 export default PokemonDetails;
-
-{
-  /*<h2>{pokemon.stats[0].stat.name}: {pokemon.stats[0].base_stat}</h2>
-<h2>{pokemon.stats[1].stat.name}: {pokemon.stats[1].base_stat}</h2>
-<h2>{pokemon.stats[2].stat.name}: {pokemon.stats[2].base_stat}</h2>
-<h2>{pokemon.stats[3].stat.name}: {pokemon.stats[3].base_stat}</h2>
-<h2>{pokemon.stats[4].stat.name}: {pokemon.stats[4].base_stat}</h2>
-<h2>{pokemon.stats[5].stat.name}: {pokemon.stats[5].base_stat}</h2>*/
-}

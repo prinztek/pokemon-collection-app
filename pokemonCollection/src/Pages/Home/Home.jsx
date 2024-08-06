@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Pagination from "../../Components/Pagination/Pagination.jsx";
 import SearchComponent from "../../Components/SearchAndFilter/SearchComponent.jsx";
 import LoadingComponent from "../../Components/LoadingComponent/LoadingComponent.jsx";
@@ -10,14 +10,12 @@ import "./Home.css";
 import { PokemonContext } from "../../PokemonProvider.jsx";
 
 const Home = () => {
-  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { pokemon, setPokemon } = useContext(PokemonContext);
   const [pokemonContainer, setPokemonContainer] = useState([]);
   const [filteredPokemonContainer, setFilteredPokemonContainer] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
   const [sortBy, setSortBy] = useState();
   const [selectedTypes, setSelectedTypes] = useState([]);
   const navigate = useNavigate();
@@ -39,46 +37,6 @@ const Home = () => {
     setItemOffset(newOffset);
     setCurrentPage(event.selected);
   };
-
-  // handle search
-  // useEffect(() => {
-  //   const findSearchPokemon = async () => {
-  //     const searchQuery = new URLSearchParams(location.search).get("q");
-  //     if (searchQuery !== null) {
-  //       const myHeaders = new Headers();
-  //       myHeaders.append("Content-Type", "application/json");
-  //       fetch("https://pokemon-collection-server.vercel.app/search", {
-  //         method: "Post",
-  //         body: JSON.stringify({ searchQuery: searchQuery }),
-  //         headers: myHeaders,
-  //       })
-  //         .then((response) => {
-  //           return response.json();
-  //         })
-  //         .then((data) => {
-  //           console.log(data);
-  //           setCurrentPage(0);
-  //           setFilteredPokemonContainer(data); // Update state with fetched data
-  //           setLoading(false);
-  //           // console.log(data);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error fetching or processing data:", error);
-  //           setLoading(false);
-  //           setError(true);
-  //         });
-  //     }
-  //   };
-
-  //   if (searchInput === "") {
-  //     setFilteredPokemonContainer(pokemonContainer);
-  //     setLoading(false);
-  //     return;
-  //   } else {
-  //     setLoading(true);
-  //     findSearchPokemon();
-  //   }
-  // }, [searchInput]);
 
   // handle sort by
   useEffect(() => {
@@ -105,58 +63,7 @@ const Home = () => {
         return 0;
       }
     );
-    // console.log(sortBy);
-    // if (sortBy === "name") {
-    //   const sortedPokemonContainer = [...filteredPokemonContainer].sort(
-    //     (a, b) => {
-    //       const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-    //       const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-    //       if (nameA < nameB) {
-    //         return -1;
-    //       }
-    //       if (nameA > nameB) {
-    //         return 1;
-    //       }
 
-    //       return 0; // names must be equal
-    //     }
-    //   );
-    //   setFilteredPokemonContainer(sortedPokemonContainer);
-    // }
-
-    // if (sortBy === "lowHp") {
-    //   const sortedPokemonContainer = [...filteredPokemonContainer].sort(
-    //     (a, b) => {
-    //       const hpA = a.stats[0].base_stat;
-    //       const hpB = b.stats[0].base_stat;
-    //       if (hpA < hpB) {
-    //         return -1;
-    //       }
-    //       if (hpA > hpB) {
-    //         return 1;
-    //       }
-    //       return 0; // hp must be equal
-    //     }
-    //   );
-    //   setFilteredPokemonContainer(sortedPokemonContainer);
-    // }
-
-    // if (sortBy === "highHp") {
-    //   const sortedPokemonContainer = [...filteredPokemonContainer].sort(
-    //     (a, b) => {
-    //       const hpA = a.stats[0].base_stat;
-    //       const hpB = b.stats[0].base_stat;
-    //       if (hpA > hpB) {
-    //         return -1;
-    //       }
-    //       if (hpA < hpB) {
-    //         return 1;
-    //       }
-    //       return 0; // hp must be equal
-    //     }
-    //   );
-    //   setFilteredPokemonContainer(sortedPokemonContainer);
-    // }
     setFilteredPokemonContainer(sortedPokemonContainer);
     setLoading(false);
   }, [sortBy]);
@@ -211,7 +118,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPokemonData = async () => {
       setLoading(true);
-      fetch("https://pokemon-collection-server.vercel.app/partial-pokemon") // partial - pokemon
+      fetch("http://localhost:3000/partial-pokemon") // partial - pokemon
         .then((response) => {
           return response.json(); // Convert response to JSON
         })
@@ -233,7 +140,7 @@ const Home = () => {
 
   async function getRandomPokemon() {
     async function handleRandomPokemon() {
-      fetch("https://pokemon-collection-server.vercel.app/random-pokemon") // partial - pokemon
+      fetch("http://localhost:3000/random-pokemon") // partial - pokemon
         .then((response) => {
           console.log(response);
           return response.json(); // Convert response to JSON
@@ -268,7 +175,7 @@ const Home = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     setLoading(true);
-    fetch("https://pokemon-collection-server.vercel.app/more-pokemon", {
+    fetch("http://localhost:3000/more-pokemon", {
       method: "POST",
       body: JSON.stringify({ index: lastPokemonId }),
       headers: myHeaders,
