@@ -27,7 +27,7 @@ const PokemonDetails = () => {
       setError(false);
       try {
         const response = await fetch(
-          `http://localhost:3000/selected-pokemon/${pokemonId}`
+          `https://pokemon-collection-server.vercel.app/selected-pokemon/${pokemonId}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
