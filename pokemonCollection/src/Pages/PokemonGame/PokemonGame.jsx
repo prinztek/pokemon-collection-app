@@ -1,16 +1,10 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import {
-  getPokemon,
-  upperCaseFirtLetter,
-  getRandomNumber,
-} from "../../Utility/utils.js";
-import ClipLoader from "react-spinners/ClipLoader";
 import "./PokemonGame.css";
 import pokemonAudio from "../../assets/pokemon-audio.mp3"; // Import the audio file
+import LoadingComponent from "../../Components/LoadingComponent/LoadingComponent.jsx";
 
 const PokemonGame = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [pokemon, setPokemon] = useState();
   const [input, setinput] = useState();
   const [isMuted, setIsMuted] = useState(false);
@@ -39,12 +33,20 @@ const PokemonGame = () => {
   }
 
   async function handleRandomPokemon() {
-    setIsLoading(true);
-    // convert to api request for random-pokemon
-    const pokemon = await getPokemon(getRandomNumber(1, 493));
-    setPokemon(pokemon);
-    setIsLoading(false);
-    playAudio();
+    setLoading(true);
+    fetch("http://localhost:3000/random-pokemon")
+      .then((response) => {
+        // console.log(response);
+        return response.json(); // Convert response to JSON
+      })
+      .then((data) => {
+        setPokemon(data);
+        setLoading(false);
+        playAudio();
+      })
+      .catch((error) => {
+        console.error("Error fetching or processing data:", error);
+      });
   }
 
   function showImage() {
@@ -56,7 +58,7 @@ const PokemonGame = () => {
     }
   }
 
-  function submitName(e) {
+  function submitName() {
     if (!input) {
       alert("Pokemon name cannot be blank!!!");
       return;
@@ -94,53 +96,43 @@ const PokemonGame = () => {
     <main>
       <div id="pokemon-game-container">
         <audio ref={audioRef} src={pokemonAudio}></audio>
-        {isLoading ? (
+        {loading && <LoadingComponent />}
+        {!loading && pokemon && (
           <>
-            <ClipLoader color={"#0000FF"} speedMultiplier={1.2} />
-            <p className="loading-text">Loading Pokemon</p>
-          </>
-        ) : (
-          <>
-            {pokemon && (
-              <>
-                <h1>{resultText}</h1>
-                <div className="pokemon-game-image-container">
-                  <img
-                    ref={imageRef}
-                    id="silhouette"
-                    src={
-                      pokemon.sprites.other["official-artwork"].front_default
-                    }
-                  />
-                </div>
-                <div className="game-controls">
-                  <input
-                    onKeyDown={onEnterDown}
-                    onChange={onInputChange}
-                    id="silhouette-input"
-                    type="text"
-                    placeholder="Enter the Pokemon name"
-                  />
-                  <div className="game-btns">
-                    <button className="btn" onClick={showImage}>
-                      Show
-                    </button>
-                    <button className="btn" onClick={submitName}>
-                      Submit
-                    </button>
-                    {!isMuted ? (
-                      <button className="btn" onClick={muteAudio}>
-                        Mute
-                      </button>
-                    ) : (
-                      <button className="btn" onClick={muteAudio}>
-                        Unmute
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
+            <h1>{resultText}</h1>
+            <div className="pokemon-game-image-container">
+              <img
+                ref={imageRef}
+                id="silhouette"
+                src={pokemon.sprites.other["official-artwork"].front_default}
+              />
+            </div>
+            <div className="game-controls">
+              <input
+                onKeyDown={onEnterDown}
+                onChange={onInputChange}
+                id="silhouette-input"
+                type="text"
+                placeholder="Enter the Pokemon name"
+              />
+              <div className="game-btns">
+                <button className="btn" onClick={showImage}>
+                  Show
+                </button>
+                <button className="btn" onClick={submitName}>
+                  Submit
+                </button>
+                {!isMuted ? (
+                  <button className="btn" onClick={muteAudio}>
+                    Mute
+                  </button>
+                ) : (
+                  <button className="btn" onClick={muteAudio}>
+                    Unmute
+                  </button>
+                )}
+              </div>
+            </div>
           </>
         )}
       </div>
