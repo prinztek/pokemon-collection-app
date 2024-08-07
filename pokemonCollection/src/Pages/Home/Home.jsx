@@ -116,48 +116,56 @@ const Home = () => {
 
   // handle pokemon cards
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const fetchPokemonData = async () => {
       setLoading(true);
-      fetch("http://localhost:3000/partial-pokemon") // partial - pokemon
-        .then((response) => {
-          return response.json(); // Convert response to JSON
-        })
-        .then((data) => {
-          // console.log(data);
-          setPokemonContainer(data);
-          setFilteredPokemonContainer(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          // Handle any errors from the fetch or subsequent operations
-          console.error("Error fetching or processing data:", error);
-          setLoading(false); // Ensure loading state is set to false in case of error
-          setError(true);
+      setError(false);
+      try {
+        const response = await fetch("http://localhost:3000/partial-pokemon", {
+          signal,
         });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setPokemonContainer(data);
+        setFilteredPokemonContainer(data);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setError(true);
+          console.error("Error fetching or processing data:", error);
+        }
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchPokemonData();
+
+    return () => {
+      controller.abort();
+    };
   }, []); // run once on mount
 
   async function getRandomPokemon() {
-    async function handleRandomPokemon() {
-      fetch("http://localhost:3000/random-pokemon") // partial - pokemon
-        .then((response) => {
-          console.log(response);
-          return response.json(); // Convert response to JSON
-        })
-        .then((data) => {
-          setPokemon(data);
-          return data;
-        })
-        .then((pokemon) => {
-          navigate(`pokemon/${pokemon.id}`);
-        })
-        .catch((error) => {
-          console.error("Error fetching or processing data:", error);
-          setError(true);
-        });
-    }
-    handleRandomPokemon();
+    fetch("http://localhost:3000/random-pokemon")
+      .then((response) => {
+        console.log(response);
+        return response.json(); // Convert response to JSON
+      })
+      .then((data) => {
+        setPokemon(data);
+        return data;
+      })
+      .then((pokemon) => {
+        navigate(`pokemon/${pokemon.id}`);
+      })
+      .catch((error) => {
+        console.error("Error fetching or processing data:", error);
+        setError(true);
+      });
   }
 
   function handleSelectedPokemon(e) {
@@ -166,7 +174,7 @@ const Home = () => {
     const pokemonId = Number(
       pokemonCard.querySelector(".pokemon-name").textContent.split(" ")[0]
     );
-    setPokemon(filteredPokemonContainer[pokemonId - 1]);
+    // setPokemon(filteredPokemonContainer[pokemonId - 1]);
     navigate(`/pokemon/${pokemonId}`);
   }
 
@@ -197,9 +205,7 @@ const Home = () => {
 
   return (
     <>
-      {loading ? (
-        <></>
-      ) : (
+      {!loading && (
         <div id="search-filter-container">
           <SearchComponent
             searchInput={searchInput}
@@ -215,22 +221,16 @@ const Home = () => {
       )}
       <main>
         <div id="pokemon-container" onClick={handleSelectedPokemon}>
-          {loading ? (
-            <LoadingComponent />
-          ) : error ? (
-            <p>Error fetching Pokemon data. Please try again later.</p>
-          ) : filteredPokemonContainer.length === 0 ? (
-            <p>No Pokemon found</p>
-          ) : (
+          {error && <p>Error fetching Pokemon data. Please try again later.</p>}
+          {loading && <LoadingComponent />}
+          {!error && !loading && filteredPokemonContainer.length !== 0 && (
             <PokemonCard
               currentItems={currentItems}
               upperCaseFirtLetter={upperCaseFirtLetter}
             />
           )}
         </div>
-        {loading ? (
-          <></>
-        ) : (
+        {!loading && (
           <>
             <Pagination
               pageCount={pageCount}
