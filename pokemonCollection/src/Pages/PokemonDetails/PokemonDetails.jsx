@@ -7,73 +7,76 @@ import { PokemonContext } from "../../PokemonProvider.jsx";
 
 const PokemonDetails = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { pokemon, setPokemon } = useContext(PokemonContext);
   const { pokemonId } = useParams();
 
+  // FETCH FOR SELECTED POKEMON
   useEffect(() => {
-    // fetch for specific pokemon
+    if (!pokemonId) return;
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function getSelectedPokemon() {
+      setLoading(true);
+      setError(false);
       try {
-        setLoading(true);
         const response = await fetch(
-          `http://localhost:3000/selected-pokemon/${pokemonId}`
+          `http://localhost:3000/selected-pokemon/${pokemonId}`,
+          { signal }
         );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setPokemon(data);
       } catch (error) {
-        console.error("Error fetching Pokémon data:", error);
-        setLoading(false);
+        if (error.name !== "AbortError") {
+          setError(true);
+          console.error("Error fetching Pokémon data:", error);
+        }
       } finally {
         setLoading(false);
       }
     }
 
-    if (pokemonId) {
-      getSelectedPokemon();
-    }
-  }, [pokemonId]);
+    getSelectedPokemon();
+
+    return () => {
+      controller.abort();
+    };
+  }, [pokemonId, setPokemon]);
 
   return (
     <main>
       <div className="pokemon-detail">
-        {loading ? (
-          <LoadingComponent />
-        ) : (
+        {error && <p>Error fetching Pokémon data</p>}
+        {loading && !error && <LoadingComponent />}
+        {pokemon && !loading && !error && (
           <>
-            {pokemon && (
-              <>
-                <div className="pokemon-detail-left">
-                  <img
-                    src={
-                      pokemon.sprites.other["official-artwork"].front_default
-                    }
-                    alt={pokemon.stats[0].stat.name}
-                  />
-                  <h1>
-                    {pokemon.id} {upperCaseFirtLetter(pokemon.name)}
-                  </h1>
-                </div>
-                <div className="pokemon-detail-right">
-                  {pokemon.stats.map((pokemonStat, index) => {
-                    const stat = upperCaseFirtLetter(pokemonStat.stat.name);
-                    const value = pokemonStat.base_stat;
-                    return (
-                      <h2 key={index}>
-                        {stat}: {value}
-                      </h2>
-                    );
-                  })}
-                  <button
-                    onClick={() => {
-                      navigate(`/`);
-                    }}
-                  >
-                    Go Back
-                  </button>
-                </div>
-              </>
-            )}
+            <div className="pokemon-detail-left">
+              <img
+                src={pokemon.sprites.other["official-artwork"].front_default}
+                alt={pokemon.stats[0].stat.name}
+              />
+              <h1>
+                {pokemon.id} {upperCaseFirtLetter(pokemon.name)}
+              </h1>
+            </div>
+            <div className="pokemon-detail-right">
+              {pokemon.stats.map((pokemonStat, index) => {
+                const stat = upperCaseFirtLetter(pokemonStat.stat.name);
+                const value = pokemonStat.base_stat;
+                return (
+                  <h2 key={index}>
+                    {stat}: {value}
+                  </h2>
+                );
+              })}
+              <button onClick={() => navigate(-1)}>Go Back</button>
+            </div>
           </>
         )}
       </div>
