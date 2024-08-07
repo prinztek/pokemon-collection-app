@@ -10,6 +10,10 @@ nav {
   margin-bottom: 15px;
 }
 
+nav a.active {
+  color: blue;
+}
+
 .logo {
   color: #333;
   font-weight: bold;

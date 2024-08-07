@@ -1,16 +1,24 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Navigation.css";
 
 const Navigation = () => {
   return (
-      <nav>
-        <Link to="/" className="logo">Pokemon Collect</Link>
-        <ul className="nav-links">
-          <li><Link to="/about">About</Link></li>
-          <li><Link to="/contact">Contact</Link></li>
-          <li><Link to="/pokemon-game">Play a Game</Link></li>
-        </ul>
-      </nav>
+    <nav>
+      <NavLink to="/" className="logo">
+        Pokemon Collect
+      </NavLink>
+      <ul className="nav-links">
+        <li>
+          <NavLink to="/about">About</NavLink>
+        </li>
+        <li>
+          <NavLink to="/contact">Contact</NavLink>
+        </li>
+        <li>
+          <NavLink to="/pokemon-game">Play a Game</NavLink>
+        </li>
+      </ul>
+    </nav>
   );
 };
 
