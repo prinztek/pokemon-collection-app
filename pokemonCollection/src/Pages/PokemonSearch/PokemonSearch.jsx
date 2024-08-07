@@ -19,16 +19,15 @@ const PokemonSearch = () => {
   useEffect(() => {
     if (!searchTerm) return;
 
-    const controller = new AbortController();
-    const signal = controller.signal;
+    // const controller = new AbortController();
+    // const signal = controller.signal;
 
     const fetchPokemons = async () => {
       setLoading(true);
       setError(false);
       try {
         const response = await fetch(
-          `https://pokemon-collection-server.vercel.app/search?q=${searchTerm}`,
-          { signal }
+          `http://localhost:3000/search?q=${searchTerm}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -47,9 +46,9 @@ const PokemonSearch = () => {
 
     fetchPokemons();
 
-    return () => {
-      controller.abort();
-    };
+    // return () => {
+    //   controller.abort();
+    // };
   }, [searchTerm]);
 
   function handleSelectedPokemon(e) {

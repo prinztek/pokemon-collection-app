@@ -14,18 +14,20 @@ const PokemonDetails = () => {
 
   // FETCH FOR SELECTED POKEMON
   useEffect(() => {
-    if (!pokemonId) return;
+    if (!pokemonId && !pokemon) {
+      console.log("returning...");
+      return;
+    }
 
-    const controller = new AbortController();
-    const signal = controller.signal;
+    // const controller = new AbortController();
+    // const signal = controller.signal;
 
     async function getSelectedPokemon() {
       setLoading(true);
       setError(false);
       try {
         const response = await fetch(
-          `https://pokemon-collection-server.vercel.app/${pokemonId}`,
-          { signal }
+          `http://localhost:3000/selected-pokemon/${pokemonId}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -44,9 +46,9 @@ const PokemonDetails = () => {
 
     getSelectedPokemon();
 
-    return () => {
-      controller.abort();
-    };
+    // return () => {
+    //   controller.abort();
+    // };
   }, [pokemonId, setPokemon]);
 
   return (
@@ -75,7 +77,7 @@ const PokemonDetails = () => {
                   </h2>
                 );
               })}
-              <button onClick={() => navigate(-1)}>Go Back</button>
+              <button onClick={() => navigate("/")}>Go Back</button>
             </div>
           </>
         )}

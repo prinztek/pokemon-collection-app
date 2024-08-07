@@ -116,19 +116,14 @@ const Home = () => {
 
   // handle pokemon cards
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+    // const controller = new AbortController();
+    // const signal = controller.signal;
 
     const fetchPokemonData = async () => {
       setLoading(true);
       setError(false);
       try {
-        const response = await fetch(
-          "https://pokemon-collection-server.vercel.app/partial-pokemon",
-          {
-            signal,
-          }
-        );
+        const response = await fetch("http://localhost:3000/partial-pokemon");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -147,13 +142,13 @@ const Home = () => {
 
     fetchPokemonData();
 
-    return () => {
-      controller.abort();
-    };
+    // return () => {
+    //   controller.abort();
+    // };
   }, []); // run once on mount
 
   async function getRandomPokemon() {
-    fetch("https://pokemon-collection-server.vercel.app/random-pokemon")
+    fetch("http://localhost:3000/random-pokemon")
       .then((response) => {
         console.log(response);
         return response.json(); // Convert response to JSON
@@ -177,7 +172,7 @@ const Home = () => {
     const pokemonId = Number(
       pokemonCard.querySelector(".pokemon-name").textContent.split(" ")[0]
     );
-    // setPokemon(filteredPokemonContainer[pokemonId - 1]);
+    setPokemon(filteredPokemonContainer[pokemonId - 1]);
     navigate(`/pokemon/${pokemonId}`);
   }
 
@@ -186,7 +181,7 @@ const Home = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     setLoading(true);
-    fetch("https://pokemon-collection-server.vercel.app/more-pokemon", {
+    fetch("http://localhost:3000/more-pokemon", {
       method: "POST",
       body: JSON.stringify({ index: lastPokemonId }),
       headers: myHeaders,
