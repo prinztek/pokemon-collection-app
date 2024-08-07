@@ -18,7 +18,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions)); // Allows web servers to specify which origins (domains) can access their resources
+app.use(cors(/* corsOptions */)); // Allows web servers to specify which origins (domains) can access their resources
 app.use(express.json()); // Add this line to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 
@@ -82,28 +82,6 @@ app.post("/more-pokemon", async (req, res) => {
   res.send(pokemonContainer);
 });
 
-// app.post("/search", async (req, res) => {
-//   const { searchQuery } = req.body;
-//   const findText = searchQuery.toLowerCase();
-//   console.log(findText);
-//   const pokemonContainer = [];
-//   let counter = 1;
-//   while (counter != 493 + 1) {
-//     try {
-//       const pokemon = await getPokemon(counter);
-//       if (pokemon.name.includes(findText)) {
-//         console.log(pokemon.name.includes(findText));
-//         pokemonContainer.push(pokemon);
-//         console.log(pokemon);
-//       }
-//     } catch (e) {
-//       console.log(e);
-//     }
-//     counter++;
-//   }
-//   res.send(pokemonContainer);
-// });
-
 app.get("/search", async (req, res) => {
   const searchTerm = req.query.q;
   console.log(searchTerm);
@@ -124,6 +102,17 @@ app.get("/search", async (req, res) => {
     counter++;
   }
   res.send(pokemonContainer);
+});
+
+app.get("/selected-pokemon/:id", async (req, res) => {
+  const pokemonId = req.params.id;
+  try {
+    const pokemon = await getPokemon(pokemonId);
+    res.status(200).send(pokemon);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 function getRandomNumber(min, max) {
