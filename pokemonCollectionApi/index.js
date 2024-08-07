@@ -18,7 +18,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(/* corsOptions */)); // Allows web servers to specify which origins (domains) can access their resources
+app.use(cors(corsOptions)); // Allows web servers to specify which origins (domains) can access their resources
 app.use(express.json()); // Add this line to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 

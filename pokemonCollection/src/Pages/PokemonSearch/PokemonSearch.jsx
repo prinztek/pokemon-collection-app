@@ -27,7 +27,7 @@ const PokemonSearch = () => {
       setError(false);
       try {
         const response = await fetch(
-          `http://localhost:3000/search?q=${searchTerm}`,
+          `https://pokemon-collection-server.vercel.app/search?q=${searchTerm}`,
           { signal }
         );
         if (!response.ok) {

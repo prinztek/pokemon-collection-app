@@ -123,9 +123,12 @@ const Home = () => {
       setLoading(true);
       setError(false);
       try {
-        const response = await fetch("http://localhost:3000/partial-pokemon", {
-          signal,
-        });
+        const response = await fetch(
+          "https://pokemon-collection-server.vercel.app/partial-pokemon",
+          {
+            signal,
+          }
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -150,7 +153,7 @@ const Home = () => {
   }, []); // run once on mount
 
   async function getRandomPokemon() {
-    fetch("http://localhost:3000/random-pokemon")
+    fetch("https://pokemon-collection-server.vercel.app/random-pokemon")
       .then((response) => {
         console.log(response);
         return response.json(); // Convert response to JSON
@@ -183,7 +186,7 @@ const Home = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     setLoading(true);
-    fetch("http://localhost:3000/more-pokemon", {
+    fetch("https://pokemon-collection-server.vercel.app/more-pokemon", {
       method: "POST",
       body: JSON.stringify({ index: lastPokemonId }),
       headers: myHeaders,

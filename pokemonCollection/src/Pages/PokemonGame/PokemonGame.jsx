@@ -34,7 +34,7 @@ const PokemonGame = () => {
 
   async function handleRandomPokemon() {
     setLoading(true);
-    fetch("http://localhost:3000/random-pokemon")
+    fetch("https://pokemon-collection-server.vercel.app/random-pokemon")
       .then((response) => {
         // console.log(response);
         return response.json(); // Convert response to JSON
