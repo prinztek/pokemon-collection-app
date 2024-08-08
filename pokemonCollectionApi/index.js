@@ -18,7 +18,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions)); // Allows web servers to specify which origins (domains) can access their resources
+app.use(cors(/* corsOptions */)); // Allows web servers to specify which origins (domains) can access their resources
 app.use(express.json()); // Add this line to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 
@@ -53,16 +53,17 @@ app.get("/", (req, res) => {
 app.get("/partial-pokemon", async (req, res) => {
   const pokemonContainer = [];
   let counter = 1;
-  while (counter != 50 + 1) {
+  while (counter != 25 + 1) {
     try {
       const pokemon = await getPokemon(counter);
       pokemonContainer.push(pokemon);
     } catch (e) {
       console.log(e);
+      res.status(500).send("Failed to retrieve resource");
     }
     counter++;
   }
-  res.send(pokemonContainer);
+  res.json(pokemonContainer);
 });
 
 app.post("/more-pokemon", async (req, res) => {
@@ -76,10 +77,11 @@ app.post("/more-pokemon", async (req, res) => {
       pokemonContainer.push(pokemon);
     } catch (e) {
       console.log(e);
+      res.status(500).send("Failed to retrieve resource");
     }
     startId++;
   }
-  res.send(pokemonContainer);
+  res.json(pokemonContainer);
 });
 
 app.get("/search", async (req, res) => {
@@ -98,20 +100,21 @@ app.get("/search", async (req, res) => {
       }
     } catch (e) {
       console.log(e);
+      res.status(500).send("Failed to retrieve resource");
     }
     counter++;
   }
-  res.send(pokemonContainer);
+  res.json(pokemonContainer);
 });
 
 app.get("/selected-pokemon/:id", async (req, res) => {
   const pokemonId = req.params.id;
   try {
     const pokemon = await getPokemon(pokemonId);
-    res.status(200).send(pokemon);
+    res.status(200).json(pokemon);
   } catch (e) {
     console.log(e);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Failed to retrieve resource");
   }
 });
 
@@ -122,9 +125,10 @@ function getRandomNumber(min, max) {
 app.get("/random-pokemon", async (req, res) => {
   try {
     const pokemon = await getPokemon(getRandomNumber(1, 493));
-    res.send(pokemon);
+    res.json(pokemon);
   } catch (e) {
     console.log(e);
+    res.status(500).send("Failed to retrieve resource");
   }
 });
 
