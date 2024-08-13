@@ -18,7 +18,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(/* corsOptions */)); // Allows web servers to specify which origins (domains) can access their resources
+app.use(cors(corsOptions)); // Allows web servers to specify which origins (domains) can access their resources
 app.use(express.json()); // Add this line to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 
@@ -51,60 +51,75 @@ app.get("/", (req, res) => {
 });
 
 app.get("/partial-pokemon", async (req, res) => {
-  const pokemonContainer = [];
+  const pokemonUrlContainer = [];
   let counter = 1;
   while (counter != 25 + 1) {
-    try {
-      const pokemon = await getPokemon(counter);
-      pokemonContainer.push(pokemon);
-    } catch (e) {
-      console.log(e);
-      res.status(500).send("Failed to retrieve resource");
-    }
+    pokemonUrlContainer.push(`https://pokeapi.co/api/v2/pokemon/${counter}`);
+    console.log(`https://pokeapi.co/api/v2/pokemon/${counter}`);
+
     counter++;
   }
-  res.json(pokemonContainer);
+
+  const requests = pokemonUrlContainer.map((url) => fetch(url));
+
+  try {
+    const response = await Promise.all(requests);
+    const data = await Promise.all(response.map((pokemon) => pokemon.json()));
+    res.json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Failed to retrieve resource");
+  }
 });
 
 app.post("/more-pokemon", async (req, res) => {
   const { index } = req.body;
-  const pokemonContainer = [];
+  const pokemonUrlContainer = [];
   let startId = Number(index) + 1;
   const endId = startId + 25;
   while (startId != endId) {
-    try {
-      const pokemon = await getPokemon(startId);
-      pokemonContainer.push(pokemon);
-    } catch (e) {
-      console.log(e);
-      res.status(500).send("Failed to retrieve resource");
-    }
+    pokemonUrlContainer.push(`https://pokeapi.co/api/v2/pokemon/${startId}`);
     startId++;
   }
-  res.json(pokemonContainer);
+
+  const requests = pokemonUrlContainer.map((url) => fetch(url));
+
+  try {
+    const response = await Promise.all(requests);
+    const data = await Promise.all(response.map((pokemon) => pokemon.json()));
+    res.json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Failed to retrieve resource");
+  }
 });
 
 app.get("/search", async (req, res) => {
   const searchTerm = req.query.q;
   console.log(searchTerm);
   const findText = searchTerm.toLowerCase();
-  const pokemonContainer = [];
+  const pokemonUrlContainer = [];
   let counter = 1;
+  // request for all
   while (counter != 493 + 1) {
-    try {
-      const pokemon = await getPokemon(counter);
-      if (pokemon.name.includes(findText)) {
-        console.log(pokemon.name.includes(findText));
-        pokemonContainer.push(pokemon);
-        console.log(pokemon.name);
-      }
-    } catch (e) {
-      console.log(e);
-      res.status(500).send("Failed to retrieve resource");
-    }
+    pokemonUrlContainer.push(`https://pokeapi.co/api/v2/pokemon/${counter}`);
     counter++;
   }
-  res.json(pokemonContainer);
+
+  const requests = pokemonUrlContainer.map((url) => fetch(url));
+  try {
+    const response = await Promise.all(requests);
+    const data = await Promise.all(response.map((pokemon) => pokemon.json()));
+    // filter result
+    const filteredData = data.filter((pokemon) =>
+      pokemon.name.includes(findText)
+    );
+
+    res.json(filteredData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to retrieve resource");
+  }
 });
 
 app.get("/selected-pokemon/:id", async (req, res) => {
