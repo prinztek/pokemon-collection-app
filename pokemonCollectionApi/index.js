@@ -22,6 +22,14 @@ app.use(cors(corsOptions)); // Allows web servers to specify which origins (doma
 app.use(express.json()); // Add this line to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 
+// // Log headers middleware
+// app.use((req, res, next) => {
+//   res.on("finish", () => {
+//     console.log("Response Headers:", res.getHeaders());
+//   });
+//   next();
+// });
+
 app.post("/send-message", (req, res) => {
   const { contactForm } = req.body;
   const { name, email, subject, message } = contactForm;
@@ -98,28 +106,22 @@ app.get("/search", async (req, res) => {
   const searchTerm = req.query.q;
   console.log(searchTerm);
   const findText = searchTerm.toLowerCase();
-  const pokemonUrlContainer = [];
+  const pokemonContainer = [];
   let counter = 1;
-  // request for all
   while (counter != 493 + 1) {
-    pokemonUrlContainer.push(`https://pokeapi.co/api/v2/pokemon/${counter}`);
+    try {
+      const pokemon = await getPokemon(counter);
+      if (pokemon.name.includes(findText)) {
+        pokemonContainer.push(pokemon);
+        console.log(pokemon.name);
+      }
+    } catch (e) {
+      console.log(e);
+      res.status(500).send("Failed to retrieve resource");
+    }
     counter++;
   }
-
-  const requests = pokemonUrlContainer.map((url) => fetch(url));
-  try {
-    const response = await Promise.all(requests);
-    const data = await Promise.all(response.map((pokemon) => pokemon.json()));
-    // filter result
-    const filteredData = data.filter((pokemon) =>
-      pokemon.name.includes(findText)
-    );
-
-    res.json(filteredData);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Failed to retrieve resource");
-  }
+  res.json(pokemonContainer);
 });
 
 app.get("/selected-pokemon/:id", async (req, res) => {
